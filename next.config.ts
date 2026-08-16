@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  transpilePackages: ["mermaid"],
+  experimental: {
+    optimizePackageImports: ["mermaid", "lucide-react", "prismjs"],
+  },
 };
 
 export default nextConfig;
