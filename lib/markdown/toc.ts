@@ -1,4 +1,5 @@
 import { TocItem } from "@/types/document";
+import { extractFrontmatter } from "./frontmatter";
 
 /**
  * Creates a URL-friendly slug from heading text.
@@ -16,12 +17,13 @@ export function slugify(text: string): string {
  * Parses markdown text to extract all headings (H1-H6) for the Table of Contents.
  */
 export function extractTocFromMarkdown(markdown: string): TocItem[] {
+  const { body } = extractFrontmatter(markdown);
   const headingRegex = /^(#{1,6})\s+(.+)$/gm;
   const items: TocItem[] = [];
   const slugCounts: Record<string, number> = {};
 
   let match;
-  while ((match = headingRegex.exec(markdown)) !== null) {
+  while ((match = headingRegex.exec(body)) !== null) {
     const level = match[1].length;
     const rawText = match[2].trim();
 
@@ -59,16 +61,17 @@ export function extractTocFromMarkdown(markdown: string): TocItem[] {
  * Calculates word, character, and reading stats.
  */
 export function calculateDocumentStats(markdown: string) {
-  const clean = markdown
+  const { body } = extractFrontmatter(markdown);
+  const clean = body
     .replace(/```[\s\S]*?```/g, "")
     .replace(/`.*?`/g, "")
     .replace(/\[.*?\]\(.*?\)/g, "")
     .replace(/[#*`~>-]/g, "");
 
   const words = clean.trim() ? clean.trim().split(/\s+/).length : 0;
-  const characters = markdown.length;
-  const charactersNoSpaces = markdown.replace(/\s/g, "").length;
-  const lines = markdown.split("\n").length;
+  const characters = body.length;
+  const charactersNoSpaces = body.replace(/\s/g, "").length;
+  const lines = body.split("\n").length;
   const readingTimeMinutes = Math.max(1, Math.ceil(words / 200));
 
   return {

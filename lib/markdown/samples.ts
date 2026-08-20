@@ -1,6 +1,17 @@
 import { MarkdownDocument } from "@/types/document";
 
-export const SAMPLE_SHOWCASE = `# rendermd — Modern Markdown Studio
+export const SAMPLE_SHOWCASE = `---
+title: "rendermd — Modern Markdown Studio"
+description: "A local-first Markdown studio with unified design presets, LaTeX math, and Mermaid diagrams."
+author: "rendermd Core Team"
+date: "2026-08-20"
+tags: [markdown, katex, mermaid, presets, frontmatter]
+status: "Published"
+draft: false
+license: "MIT"
+---
+
+# rendermd — Modern Markdown Studio
 
 > [!NOTE]
 > **rendermd** is a lightweight, local-first Markdown studio where typography, math, and diagrams share a single cohesive design system.

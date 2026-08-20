@@ -9,6 +9,8 @@ import { remarkAlert } from "remark-github-blockquote-alert";
 import { DocumentPreset } from "@/types/preset";
 import { PageSize } from "@/types/document";
 import { generatePresetCSSVariables } from "@/lib/presets/generator";
+import { extractFrontmatter } from "@/lib/markdown/frontmatter";
+import { FrontmatterBlock } from "./frontmatter-block";
 import { MermaidBlock } from "./mermaid-block";
 import { CodeBlock } from "./code-block";
 import { slugify } from "@/lib/markdown/toc";
@@ -34,6 +36,10 @@ export function MarkdownPreview({
     return generatePresetCSSVariables(preset);
   }, [preset]);
 
+  const { frontmatter, body } = useMemo(() => {
+    return extractFrontmatter(content);
+  }, [content]);
+
   // Page width styling depending on PageSize
   const pageSizeClass = useMemo(() => {
     switch (pageSize) {
@@ -53,6 +59,7 @@ export function MarkdownPreview({
       style={cssVariables as React.CSSProperties}
       className={`markdown-document relative px-[var(--md-padding-page)] py-8 transition-colors duration-200 ${pageSizeClass} ${className}`}
     >
+      <FrontmatterBlock frontmatter={frontmatter} preset={preset} />
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkMath, remarkAlert]}
         rehypePlugins={[rehypeKatex]}
@@ -65,7 +72,7 @@ export function MarkdownPreview({
               <h1 id={slug} className="group relative" {...props}>
                 <a
                   href={`#${slug}`}
-                  className="mr-2 opacity-0 transition-opacity group-hover:opacity-60 text-xs no-underline font-mono"
+                  className="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 transition-opacity group-hover:opacity-60 text-xs no-underline font-mono select-none"
                   aria-hidden="true"
                 >
                   #
@@ -81,7 +88,7 @@ export function MarkdownPreview({
               <h2 id={slug} className="group relative" {...props}>
                 <a
                   href={`#${slug}`}
-                  className="mr-2 opacity-0 transition-opacity group-hover:opacity-60 text-xs no-underline font-mono"
+                  className="absolute -left-7 top-1/2 -translate-y-1/2 opacity-0 transition-opacity group-hover:opacity-60 text-xs no-underline font-mono select-none"
                   aria-hidden="true"
                 >
                   ##
@@ -94,7 +101,14 @@ export function MarkdownPreview({
             const text = String(children);
             const slug = slugify(text);
             return (
-              <h3 id={slug} {...props}>
+              <h3 id={slug} className="group relative" {...props}>
+                <a
+                  href={`#${slug}`}
+                  className="absolute -left-8 top-1/2 -translate-y-1/2 opacity-0 transition-opacity group-hover:opacity-60 text-xs no-underline font-mono select-none"
+                  aria-hidden="true"
+                >
+                  ###
+                </a>
                 {children}
               </h3>
             );
@@ -170,7 +184,7 @@ export function MarkdownPreview({
           ),
         }}
       >
-        {content}
+        {body}
       </ReactMarkdown>
     </div>
   );

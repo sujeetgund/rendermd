@@ -20,6 +20,7 @@ import {
   GitBranch,
   Info,
   ChevronDown,
+  FileCode,
 } from "lucide-react";
 import { AlertType } from "@/components/preview/alert-block";
 
@@ -373,6 +374,21 @@ graph TD
           </div>
         )}
       </div>
+
+      {/* Frontmatter Metadata Button */}
+      <button
+        onClick={() =>
+          onInsert(
+            `---\ntitle: "Document Title"\ndescription: "Brief summary or abstract of the document"\nauthor: "Your Name"\ndate: "${new Date().toISOString().split("T")[0]}"\ntags: [markdown, frontmatter, document]\ndraft: false\n---\n\n`,
+            ""
+          )
+        }
+        title="Insert Frontmatter Metadata"
+        className="flex h-7 shrink-0 items-center gap-1 rounded px-2 text-xs font-medium hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
+      >
+        <FileCode className="h-3.5 w-3.5 text-rose-500" />
+        <span>Frontmatter</span>
+      </button>
     </div>
   );
 }
