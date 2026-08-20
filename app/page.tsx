@@ -22,7 +22,9 @@ import {
 import {
   calculateDocumentStats,
   extractTocFromMarkdown,
+  slugify,
 } from "@/lib/markdown/toc";
+import { extractFrontmatter } from "@/lib/markdown/frontmatter";
 import { generateStandaloneHtml, downloadHtmlFile } from "@/lib/export/html-exporter";
 import { exportToPdfPrint } from "@/lib/export/pdf-exporter";
 import { exportElementAsImage } from "@/lib/export/image-exporter";
@@ -231,7 +233,57 @@ export default function RendermdStudio() {
     []
   );
 
-  // Synchronized Scrolling Logic
+  // Heading-Sectional Synchronized Scrolling Logic
+  function getSectionAnchors(
+    markdown: string,
+    textarea: HTMLTextAreaElement,
+    preview: HTMLDivElement
+  ) {
+    const lines = markdown.split("\n");
+    const totalLines = lines.length || 1;
+    const lineHeight = textarea.scrollHeight / totalLines;
+
+    const anchors: { yEditor: number; yPreview: number }[] = [];
+    anchors.push({ yEditor: 0, yPreview: 0 });
+
+    const slugCounts: Record<string, number> = {};
+
+    for (let i = 0; i < lines.length; i++) {
+      const match = /^(#{1,6})\s+(.+)$/.exec(lines[i]);
+      if (!match) continue;
+
+      const rawText = match[2].trim();
+      const cleanText = rawText
+        .replace(/\*\*(.*?)\*\*/g, "$1")
+        .replace(/\*(.*?)\*/g, "$1")
+        .replace(/`(.*?)`/g, "$1")
+        .replace(/\[(.*?)\]\(.*?\)/g, "$1")
+        .replace(/\$(.*?)\$/g, "$1");
+
+      let slug = slugify(cleanText);
+      if (!slug) slug = `heading-${anchors.length}`;
+      if (slugCounts[slug]) {
+        slugCounts[slug]++;
+        slug = `${slug}-${slugCounts[slug]}`;
+      } else {
+        slugCounts[slug] = 1;
+      }
+
+      const previewEl = preview.querySelector<HTMLElement>(`[id="${slug}"]`);
+      if (previewEl) {
+        const yEditor = i * lineHeight;
+        const yPreview = previewEl.offsetTop;
+        anchors.push({ yEditor, yPreview });
+      }
+    }
+
+    const maxEditor = Math.max(0, textarea.scrollHeight - textarea.clientHeight);
+    const maxPreview = Math.max(0, preview.scrollHeight - preview.clientHeight);
+    anchors.push({ yEditor: maxEditor, yPreview: maxPreview });
+
+    return anchors;
+  }
+
   const handleEditorScroll = (e: React.UIEvent<HTMLTextAreaElement>) => {
     if (!settings.syncScroll || isScrollingSyncRef.current) return;
     const textarea = e.currentTarget;
@@ -239,9 +291,58 @@ export default function RendermdStudio() {
     if (!preview) return;
 
     isScrollingSyncRef.current = true;
-    const percentage =
-      textarea.scrollTop / (textarea.scrollHeight - textarea.clientHeight || 1);
-    preview.scrollTop = percentage * (preview.scrollHeight - preview.clientHeight);
+
+    const anchors = getSectionAnchors(currentDoc.content, textarea, preview);
+    anchors.sort((a, b) => a.yEditor - b.yEditor);
+
+    const currentY = textarea.scrollTop;
+
+    let i = 0;
+    for (let idx = 0; idx < anchors.length - 1; idx++) {
+      if (currentY >= anchors[idx].yEditor) {
+        i = idx;
+      }
+    }
+
+    const a1 = anchors[i];
+    const a2 = anchors[i + 1] || a1;
+
+    const editorRange = a2.yEditor - a1.yEditor;
+    const progress = editorRange > 0 ? (currentY - a1.yEditor) / editorRange : 0;
+    preview.scrollTop = a1.yPreview + progress * (a2.yPreview - a1.yPreview);
+
+    setTimeout(() => {
+      isScrollingSyncRef.current = false;
+    }, 50);
+  };
+
+  const handlePreviewScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    if (!settings.syncScroll || isScrollingSyncRef.current) return;
+    const preview = e.currentTarget;
+    const textarea = editorRef.current;
+    if (!textarea) return;
+
+    isScrollingSyncRef.current = true;
+
+    const anchors = getSectionAnchors(currentDoc.content, textarea, preview);
+    anchors.sort((a, b) => a.yPreview - b.yPreview);
+
+    const currentY = preview.scrollTop;
+
+    let i = 0;
+    for (let idx = 0; idx < anchors.length - 1; idx++) {
+      if (currentY >= anchors[idx].yPreview) {
+        i = idx;
+      }
+    }
+
+    const a1 = anchors[i];
+    const a2 = anchors[i + 1] || a1;
+
+    const previewRange = a2.yPreview - a1.yPreview;
+    const progress = previewRange > 0 ? (currentY - a1.yPreview) / previewRange : 0;
+    textarea.scrollTop = a1.yEditor + progress * (a2.yEditor - a1.yEditor);
+
     setTimeout(() => {
       isScrollingSyncRef.current = false;
     }, 50);
@@ -402,6 +503,7 @@ export default function RendermdStudio() {
           right={
             <div
               ref={previewRef}
+              onScroll={handlePreviewScroll}
               className="h-full w-full overflow-y-auto bg-neutral-100/60 dark:bg-[#06080d]"
             >
               <MarkdownPreview

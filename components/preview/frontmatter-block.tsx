@@ -79,7 +79,7 @@ export function FrontmatterBlock({
 
   return (
     <div
-      className={`not-prose my-6 rounded-[var(--md-radius)] border border-[var(--md-border)] bg-[var(--md-surface-subtle)]/70 backdrop-blur-xs overflow-hidden transition-all duration-200 shadow-sm ${className}`}
+      className={`frontmatter-block-root not-prose my-6 rounded-[var(--md-radius)] border border-[var(--md-border)] bg-[var(--md-surface-subtle)]/70 backdrop-blur-xs overflow-hidden transition-all duration-200 shadow-sm ${className}`}
     >
       {/* Top Action & Format Bar */}
       <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 border-b border-[var(--md-border)] bg-black/5 dark:bg-white/5 select-none">

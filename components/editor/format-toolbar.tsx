@@ -134,7 +134,7 @@ graph TD
   };
 
   return (
-    <div className="relative z-30 flex flex-wrap items-center gap-0.5 border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50/90 dark:bg-[#0f141d]/90 px-3 py-1.5 backdrop-blur-xs text-neutral-700 dark:text-neutral-300 shrink-0 select-none overflow-visible">
+    <div className="relative z-20 flex flex-wrap items-center gap-0.5 border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50/90 dark:bg-[#0f141d]/90 px-3 py-1.5 backdrop-blur-xs text-neutral-700 dark:text-neutral-300 shrink-0 select-none overflow-visible">
       {/* Headings */}
       <button
         onClick={() => onInsert("# ", "", "Heading 1")}

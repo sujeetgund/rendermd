@@ -3,7 +3,19 @@
 import React, { useState, useRef, useEffect } from "react";
 import { DocumentPreset, PresetId } from "@/types/preset";
 import { PRESET_LIST } from "@/lib/presets";
-import { ChevronDown, Sparkles, Check, SlidersHorizontal } from "lucide-react";
+import {
+  ChevronDown,
+  Sparkles,
+  Check,
+  SlidersHorizontal,
+  Type,
+  GitBranch,
+  GraduationCap,
+  Terminal,
+  Moon,
+  BookOpen,
+  Palette,
+} from "lucide-react";
 
 interface PresetSelectorProps {
   currentPresetId: PresetId;
@@ -12,15 +24,26 @@ interface PresetSelectorProps {
   customPreset?: DocumentPreset;
 }
 
-const PRESET_ICONS: Record<string, string> = {
-  minimal: "Aa",
-  github: "🐙",
-  academic: "🏛️",
-  technical: "<>",
-  midnight: "🌙",
-  editorial: "✍️",
-  custom: "✦",
-};
+export function getPresetIcon(id: string) {
+  switch (id) {
+    case "minimal":
+      return <Type className="h-3.5 w-3.5" />;
+    case "github":
+      return <GitBranch className="h-3.5 w-3.5" />;
+    case "academic":
+      return <GraduationCap className="h-3.5 w-3.5 text-blue-500" />;
+    case "technical":
+      return <Terminal className="h-3.5 w-3.5 text-emerald-500" />;
+    case "midnight":
+      return <Moon className="h-3.5 w-3.5 text-indigo-400" />;
+    case "editorial":
+      return <BookOpen className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />;
+    case "custom":
+      return <Palette className="h-3.5 w-3.5 text-purple-500" />;
+    default:
+      return <Sparkles className="h-3.5 w-3.5" />;
+  }
+}
 
 export function PresetSelector({
   currentPresetId,
@@ -51,8 +74,8 @@ export function PresetSelector({
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-1.5 text-xs font-medium text-neutral-800 dark:text-neutral-200 shadow-xs hover:border-neutral-300 dark:hover:border-neutral-700 transition-all"
       >
-        <span className="flex h-4 w-4 items-center justify-center rounded bg-neutral-100 dark:bg-neutral-800 text-[10px] font-bold">
-          {PRESET_ICONS[currentPresetId] || "Aa"}
+        <span className="flex h-5 w-5 items-center justify-center rounded bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300">
+          {getPresetIcon(currentPresetId)}
         </span>
         <span className="font-medium">
           Preset: <span className="font-semibold text-neutral-950 dark:text-white">{activePreset?.name || "Custom"}</span>
@@ -61,7 +84,7 @@ export function PresetSelector({
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 top-10 z-40 w-72 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-2 shadow-2xl backdrop-blur-md">
+        <div className="absolute left-0 lg:left-auto lg:right-0 top-full mt-1.5 z-50 w-72 max-h-[80vh] overflow-y-auto rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-2 shadow-2xl backdrop-blur-md">
           <div className="px-2 py-1.5 text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">
             Document Styling Presets
           </div>
@@ -83,17 +106,16 @@ export function PresetSelector({
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    {/* Visual Preset Thumbnail preview */}
+                    {/* Visual Preset Icon Box */}
                     <div
                       className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border text-xs font-bold shadow-2xs"
                       style={{
                         backgroundColor: preset.colors.background,
                         borderColor: preset.colors.border,
                         color: preset.colors.heading,
-                        fontFamily: preset.typography.fontFamily,
                       }}
                     >
-                      {PRESET_ICONS[preset.id] || "Aa"}
+                      {getPresetIcon(preset.id)}
                     </div>
                     <div>
                       <div className="text-xs font-semibold">{preset.name}</div>

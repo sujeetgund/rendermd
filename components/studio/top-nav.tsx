@@ -125,7 +125,7 @@ export function TopNav({
   };
 
   return (
-    <header className="flex h-14 w-full items-center justify-between border-b border-neutral-200 dark:border-neutral-800 bg-white/90 dark:bg-[#0b0f17]/90 px-4 backdrop-blur-md z-30 select-none">
+    <header className="flex h-14 w-full items-center justify-between border-b border-neutral-200 dark:border-neutral-800 bg-white/90 dark:bg-[#0b0f17]/90 px-4 backdrop-blur-md z-40 select-none">
       {/* Left Section: Logo & Document Title */}
       <div className="flex items-center gap-3 min-w-0">
         <button

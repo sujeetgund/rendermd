@@ -13,6 +13,8 @@ import {
   Sparkles,
   Check,
   FolderOpen,
+  GraduationCap,
+  Terminal,
 } from "lucide-react";
 import { toast } from "sonner";
 import { SAMPLE_SHOWCASE, SAMPLE_ACADEMIC, SAMPLE_RFC } from "@/lib/markdown/samples";
@@ -128,21 +130,24 @@ export function DocumentDrawer({
               </div>
               <button
                 onClick={() => handleCreateTemplate("showcase")}
-                className="block w-full text-left rounded px-2 py-1 text-xs hover:bg-amber-100 dark:hover:bg-amber-900/40 text-neutral-800 dark:text-neutral-200"
+                className="flex items-center gap-2 w-full text-left rounded px-2 py-1 text-xs hover:bg-amber-100 dark:hover:bg-amber-900/40 text-neutral-800 dark:text-neutral-200"
               >
-                ✨ Complete Showcase
+                <Sparkles className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+                <span>Complete Showcase</span>
               </button>
               <button
                 onClick={() => handleCreateTemplate("academic")}
-                className="block w-full text-left rounded px-2 py-1 text-xs hover:bg-amber-100 dark:hover:bg-amber-900/40 text-neutral-800 dark:text-neutral-200"
+                className="flex items-center gap-2 w-full text-left rounded px-2 py-1 text-xs hover:bg-amber-100 dark:hover:bg-amber-900/40 text-neutral-800 dark:text-neutral-200"
               >
-                🏛️ Academic Paper
+                <GraduationCap className="h-3.5 w-3.5 text-blue-500 shrink-0" />
+                <span>Academic Paper</span>
               </button>
               <button
                 onClick={() => handleCreateTemplate("rfc")}
-                className="block w-full text-left rounded px-2 py-1 text-xs hover:bg-amber-100 dark:hover:bg-amber-900/40 text-neutral-800 dark:text-neutral-200"
+                className="flex items-center gap-2 w-full text-left rounded px-2 py-1 text-xs hover:bg-amber-100 dark:hover:bg-amber-900/40 text-neutral-800 dark:text-neutral-200"
               >
-                🛠️ Technical RFC
+                <Terminal className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                <span>Technical RFC</span>
               </button>
             </div>
           )}
