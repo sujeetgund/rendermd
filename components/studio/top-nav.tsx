@@ -89,10 +89,16 @@ export function TopNav({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (exportRef.current && !exportRef.current.contains(event.target as Node)) {
+      if (
+        exportRef.current &&
+        !exportRef.current.contains(event.target as Node)
+      ) {
         setShowExportMenu(false);
       }
-      if (settingsRef.current && !settingsRef.current.contains(event.target as Node)) {
+      if (
+        settingsRef.current &&
+        !settingsRef.current.contains(event.target as Node)
+      ) {
         setShowSettingsMenu(false);
       }
     };
@@ -133,13 +139,17 @@ export function TopNav({
           title="Open Document Manager"
           className="flex items-center gap-2 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-1.5 text-xs font-semibold text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
         >
-          <PanelLeft className="h-4 w-4 text-blue-500" />
+          <PanelLeft className="h-4 w-4 text-emerald-500" />
         </button>
 
         <div className="flex items-center gap-2">
-          <span className="font-mono text-sm font-bold tracking-tight bg-gradient-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent">
-            rendermd
-          </span>
+          {/* Logo Mark */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo.png"
+            alt="rendermd logo"
+            className="h-5 w-5 rounded object-contain shrink-0"
+          />
           <span className="text-neutral-300 dark:text-neutral-700">/</span>
         </div>
 
@@ -158,7 +168,7 @@ export function TopNav({
                 setTitleValue(currentDoc.title);
               }
             }}
-            className="rounded border border-blue-500 bg-transparent px-2 py-0.5 text-xs font-medium text-neutral-900 dark:text-neutral-100 outline-hidden"
+            className="rounded border border-emerald-500 bg-transparent px-2 py-0.5 text-xs font-medium text-neutral-900 dark:text-neutral-100 outline-hidden"
           />
         ) : (
           <button
@@ -208,7 +218,7 @@ export function TopNav({
             title="Split Mode (Editor + Preview)"
             className={`rounded-md p-1.5 transition-all ${
               viewMode === "split"
-                ? "bg-white dark:bg-neutral-800 text-blue-600 dark:text-blue-400 shadow-2xs"
+                ? "bg-white dark:bg-neutral-800 text-emerald-600 dark:text-emerald-400 shadow-2xs"
                 : "text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200"
             }`}
           >
@@ -219,7 +229,7 @@ export function TopNav({
             title="Editor Only"
             className={`rounded-md p-1.5 transition-all ${
               viewMode === "editor"
-                ? "bg-white dark:bg-neutral-800 text-blue-600 dark:text-blue-400 shadow-2xs"
+                ? "bg-white dark:bg-neutral-800 text-emerald-600 dark:text-emerald-400 shadow-2xs"
                 : "text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200"
             }`}
           >
@@ -230,7 +240,7 @@ export function TopNav({
             title="Preview Only"
             className={`rounded-md p-1.5 transition-all ${
               viewMode === "preview"
-                ? "bg-white dark:bg-neutral-800 text-blue-600 dark:text-blue-400 shadow-2xs"
+                ? "bg-white dark:bg-neutral-800 text-emerald-600 dark:text-emerald-400 shadow-2xs"
                 : "text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200"
             }`}
           >
@@ -280,8 +290,10 @@ export function TopNav({
                 <input
                   type="checkbox"
                   checked={settings.syncScroll}
-                  onChange={(e) => onUpdateSettings({ syncScroll: e.target.checked })}
-                  className="rounded accent-blue-600"
+                  onChange={(e) =>
+                    onUpdateSettings({ syncScroll: e.target.checked })
+                  }
+                  className="rounded accent-emerald-600"
                 />
               </label>
 
@@ -291,8 +303,10 @@ export function TopNav({
                 <input
                   type="checkbox"
                   checked={settings.lineNumbers}
-                  onChange={(e) => onUpdateSettings({ lineNumbers: e.target.checked })}
-                  className="rounded accent-blue-600"
+                  onChange={(e) =>
+                    onUpdateSettings({ lineNumbers: e.target.checked })
+                  }
+                  className="rounded accent-emerald-600"
                 />
               </label>
 
@@ -302,8 +316,10 @@ export function TopNav({
                 <input
                   type="checkbox"
                   checked={settings.wordWrap}
-                  onChange={(e) => onUpdateSettings({ wordWrap: e.target.checked })}
-                  className="rounded accent-blue-600"
+                  onChange={(e) =>
+                    onUpdateSettings({ wordWrap: e.target.checked })
+                  }
+                  className="rounded accent-emerald-600"
                 />
               </label>
 
@@ -311,7 +327,9 @@ export function TopNav({
               <div>
                 <div className="flex justify-between text-xs text-neutral-700 dark:text-neutral-300 mb-1">
                   <span>Editor Font Size</span>
-                  <span className="font-mono text-neutral-400">{settings.fontSize}px</span>
+                  <span className="font-mono text-neutral-400">
+                    {settings.fontSize}px
+                  </span>
                 </div>
                 <input
                   type="range"
@@ -321,7 +339,7 @@ export function TopNav({
                   onChange={(e) =>
                     onUpdateSettings({ fontSize: parseInt(e.target.value, 10) })
                   }
-                  className="w-full accent-blue-600"
+                  className="w-full accent-emerald-600"
                 />
               </div>
             </div>
@@ -332,7 +350,7 @@ export function TopNav({
         <div ref={exportRef} className="relative">
           <button
             onClick={() => setShowExportMenu(!showExportMenu)}
-            className="flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white shadow-xs hover:bg-blue-700 transition-colors"
+            className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white shadow-xs hover:bg-emerald-700 transition-colors"
           >
             <Download className="h-3.5 w-3.5" />
             <span>Export</span>
@@ -352,7 +370,9 @@ export function TopNav({
                 <FileCode className="h-4 w-4 text-orange-500 shrink-0" />
                 <div>
                   <div className="font-medium">Standalone HTML</div>
-                  <div className="text-[10px] text-neutral-400">Self-contained file with inlined styles</div>
+                  <div className="text-[10px] text-neutral-400">
+                    Self-contained file with inlined styles
+                  </div>
                 </div>
               </button>
 
@@ -363,18 +383,24 @@ export function TopNav({
                 <Printer className="h-4 w-4 text-red-500 shrink-0" />
                 <div>
                   <div className="font-medium">PDF Print Document</div>
-                  <div className="text-[10px] text-neutral-400">A4 / Letter optimized layout</div>
+                  <div className="text-[10px] text-neutral-400">
+                    A4 / Letter optimized layout
+                  </div>
                 </div>
               </button>
 
               <button
-                onClick={() => triggerExportWithConfetti(() => onExportImage("png"))}
+                onClick={() =>
+                  triggerExportWithConfetti(() => onExportImage("png"))
+                }
                 className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-xs text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
               >
                 <ImageIcon className="h-4 w-4 text-emerald-500 shrink-0" />
                 <div>
                   <div className="font-medium">High-Res PNG Image</div>
-                  <div className="text-[10px] text-neutral-400">2x Retina document snapshot</div>
+                  <div className="text-[10px] text-neutral-400">
+                    2x Retina document snapshot
+                  </div>
                 </div>
               </button>
 

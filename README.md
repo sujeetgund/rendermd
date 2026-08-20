@@ -1,8 +1,9 @@
 <div align="center">
 
-# ✦ rendermd
+<img src="public/logo.png" alt="rendermd logo" width="110" style="border-radius: 20px;" />
+<hr />
 
-**The local-first Markdown studio with unified design presets for typography, LaTeX math, and Mermaid diagrams.**
+**rendermd is the local-first Markdown studio with unified design presets for typography, LaTeX math, and Mermaid diagrams.**
 
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-blue?style=flat-square&logo=react)](https://react.dev/)
@@ -70,21 +71,22 @@ Traditional Markdown renderers assemble independent libraries: standard Markdown
 
 ## Unified Design Presets
 
-| Preset | Character & Typography | Best Suited For |
-| :--- | :--- | :--- |
-| **Minimal** | Apple / Craft aesthetic, slate accents, spacious whitespace | Essays, notes, clean documentation |
-| **GitHub** | Authentic GitHub Markdown, system fonts, crisp callouts | Open source docs, READMEs, changelogs |
-| **Academic** | Newsreader serif paper, comfortable reading line-height | Research papers, scientific articles, formulas |
-| **Technical** | JetBrains Mono headings, cyan accents, dense layout | RFCs, API specifications, system architecture |
-| **Midnight** | Glowing dark canvas, luminous indigo/violet accents | Developer specs, night mode reading |
-| **Editorial** | Warm ivory paper, terracotta accents, magazine elegance | Longform essays, articles, publishing |
-| **Custom** | Real-time interactive studio (color pickers, font selectors) | Custom branding and exportable theme JSONs |
+| Preset        | Character & Typography                                       | Best Suited For                                |
+| :------------ | :----------------------------------------------------------- | :--------------------------------------------- |
+| **Minimal**   | Apple / Craft aesthetic, slate accents, spacious whitespace  | Essays, notes, clean documentation             |
+| **GitHub**    | Authentic GitHub Markdown, system fonts, crisp callouts      | Open source docs, READMEs, changelogs          |
+| **Academic**  | Newsreader serif paper, comfortable reading line-height      | Research papers, scientific articles, formulas |
+| **Technical** | JetBrains Mono headings, cyan accents, dense layout          | RFCs, API specifications, system architecture  |
+| **Midnight**  | Glowing dark canvas, luminous indigo/violet accents          | Developer specs, night mode reading            |
+| **Editorial** | Warm ivory paper, terracotta accents, magazine elegance      | Longform essays, articles, publishing          |
+| **Custom**    | Real-time interactive studio (color pickers, font selectors) | Custom branding and exportable theme JSONs     |
 
 ---
 
 ## Quick Start
 
 ### Prerequisites
+
 - Node.js `18.18+` or `20+`
 - [pnpm](https://pnpm.io/) `10+` (recommended)
 

@@ -23,6 +23,9 @@ export const metadata: Metadata = {
   title: "rendermd — Lightweight & Beautiful Markdown Studio",
   description:
     "Local-first Markdown studio with unified presets for typography, KaTeX math, and Mermaid diagrams.",
+  icons: {
+    icon: "/logo.png",
+  },
 };
 
 export default function RootLayout({

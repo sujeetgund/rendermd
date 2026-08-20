@@ -82,7 +82,7 @@ export function DocumentDrawer({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 pb-3">
           <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-neutral-900 dark:text-white">
-            <FolderOpen className="h-4 w-4 text-blue-500" />
+            <FolderOpen className="h-4 w-4 text-emerald-500" />
             <span>Documents ({documents.length})</span>
           </div>
           <button
@@ -97,7 +97,7 @@ export function DocumentDrawer({
         <div className="my-3 space-y-2">
           <button
             onClick={handleCreateBlank}
-            className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white shadow-xs hover:bg-blue-700 transition-colors"
+            className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white shadow-xs hover:bg-emerald-700 transition-colors"
           >
             <Plus className="h-4 w-4" />
             <span>New Document</span>
@@ -166,21 +166,21 @@ export function DocumentDrawer({
                 }}
                 className={`group flex items-center justify-between rounded-lg p-2.5 cursor-pointer transition-all ${
                   isActive
-                    ? "bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/50"
+                    ? "bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/50"
                     : "hover:bg-neutral-100 dark:hover:bg-neutral-800/60 border border-transparent"
                 }`}
               >
                 <div className="flex items-center gap-2.5 min-w-0">
                   <FileText
                     className={`h-4 w-4 shrink-0 ${
-                      isActive ? "text-blue-600 dark:text-blue-400" : "text-neutral-400"
+                      isActive ? "text-emerald-600 dark:text-emerald-400" : "text-neutral-400"
                     }`}
                   />
                   <div className="min-w-0">
                     <div
                       className={`truncate text-xs font-semibold ${
                         isActive
-                          ? "text-blue-900 dark:text-blue-200"
+                          ? "text-emerald-900 dark:text-emerald-200"
                           : "text-neutral-800 dark:text-neutral-200"
                       }`}
                     >

@@ -23,7 +23,7 @@ export function TocDrawer({
     <div className="fixed inset-y-0 right-0 z-40 w-72 border-l border-neutral-200 dark:border-neutral-800 bg-white/95 dark:bg-neutral-900/95 p-4 shadow-2xl backdrop-blur-md flex flex-col">
       <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 pb-3">
         <div className="flex items-center gap-2 text-xs font-semibold text-neutral-900 dark:text-white uppercase tracking-wider">
-          <ListTree className="h-4 w-4 text-blue-500" />
+          <ListTree className="h-4 w-4 text-emerald-500" />
           <span>Outline / TOC</span>
         </div>
         <button

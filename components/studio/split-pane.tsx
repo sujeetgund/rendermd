@@ -76,9 +76,9 @@ export function SplitPane({
       {/* Resizer Divider */}
       <div
         onMouseDown={startDragging}
-        className="group relative z-20 flex w-2 shrink-0 cursor-col-resize items-center justify-center bg-neutral-200 dark:bg-neutral-800 transition-colors hover:bg-blue-500/50"
+        className="group relative z-20 flex w-2 shrink-0 cursor-col-resize items-center justify-center bg-neutral-200 dark:bg-neutral-800 transition-colors hover:bg-emerald-500/50"
       >
-        <div className="h-8 w-1 rounded-full bg-neutral-400 group-hover:bg-blue-500 transition-colors" />
+        <div className="h-8 w-1 rounded-full bg-neutral-400 group-hover:bg-emerald-500 transition-colors" />
       </div>
 
       {/* Right Pane (Preview) */}
