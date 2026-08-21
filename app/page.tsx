@@ -19,6 +19,7 @@ import {
   loadStoredCustomPreset,
   saveStoredCustomPreset,
 } from "@/lib/storage/document-store";
+import { parseShareUrlHash } from "@/lib/storage/share";
 import {
   calculateDocumentStats,
   extractTocFromMarkdown,
@@ -101,6 +102,40 @@ export default function RendermdStudio() {
       saveStoredSettings(settings);
     }
   }, [settings, isHydrated]);
+
+  // Handle incoming shared URL hash links (#doc=...)
+  useEffect(() => {
+    if (!isHydrated) return;
+    if (typeof window !== "undefined" && window.location.hash.includes("#doc=")) {
+      const payload = parseShareUrlHash(window.location.hash);
+      if (payload && payload.c) {
+        const sharedTitle = payload.t || "Shared Document";
+        const newDocId = `shared-${Date.now()}`;
+        const newDoc: MarkdownDocument = {
+          id: newDocId,
+          title: sharedTitle,
+          content: payload.c,
+          presetId: payload.p || "minimal",
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+        };
+
+        setDocuments((prev) => [newDoc, ...prev]);
+        setActiveDocId(newDocId);
+
+        // Clear hash from URL without page reload
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname + window.location.search
+        );
+
+        toast.success(`Loaded shared document: "${sharedTitle}"`, {
+          description: "Saved to your local documents list.",
+        });
+      }
+    }
+  }, [isHydrated]);
 
   // Active document object
   const currentDoc = useMemo(() => {

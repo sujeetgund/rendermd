@@ -31,10 +31,12 @@ import {
   Moon,
   Check,
   PanelLeft,
+  Link2,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import confetti from "canvas-confetti";
+import { generateShareUrl } from "@/lib/storage/share";
 
 interface TopNavProps {
   document: MarkdownDocument;
@@ -126,6 +128,33 @@ export function TopNav({
     }
   };
 
+  const handleShareLink = () => {
+    try {
+      const shareUrl = generateShareUrl(
+        currentDoc.title,
+        currentDoc.content,
+        currentDoc.presetId
+      );
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        toast.success("Share link copied to clipboard!", {
+          description: "Anyone opening this URL gets the document instantly (works offline).",
+        });
+      });
+      try {
+        confetti({
+          particleCount: 35,
+          spread: 55,
+          origin: { y: 0.1, x: 0.85 },
+          colors: ["#10b981", "#3b82f6", "#8b5cf6"],
+        });
+      } catch {
+        // Confetti is decorative
+      }
+    } catch {
+      toast.error("Failed to generate share link");
+    }
+  };
+
   const triggerExportWithConfetti = (action: () => void) => {
     action();
     setShowExportMenu(false);
@@ -179,16 +208,16 @@ export function TopNav({
                 setTitleValue(currentDoc.title);
               }
             }}
-            className="rounded border border-emerald-500 bg-transparent px-2 py-0.5 text-xs font-medium text-neutral-900 dark:text-neutral-100 outline-hidden"
+            className="rounded border border-emerald-500 bg-white dark:bg-neutral-900 px-2 py-0.5 text-sm font-semibold text-neutral-900 dark:text-white outline-hidden"
           />
         ) : (
           <button
             onClick={() => setIsEditingTitle(true)}
             title="Click to rename document"
-            className="group flex items-center gap-1.5 truncate rounded px-2 py-1 text-xs font-semibold text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/60"
+            className="group flex items-center gap-1.5 rounded-md px-2 py-1 text-sm font-semibold text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/70 transition-colors truncate max-w-[220px] sm:max-w-[320px]"
           >
-            <span className="truncate max-w-[200px]">{currentDoc.title}</span>
-            <Edit3 className="h-3 w-3 opacity-0 group-hover:opacity-60 transition-opacity" />
+            <span className="truncate">{currentDoc.title}</span>
+            <Edit3 className="h-3 w-3 opacity-0 group-hover:opacity-60 transition-opacity shrink-0" />
           </button>
         )}
       </div>
@@ -301,10 +330,10 @@ export function TopNav({
                     <button
                       key={size}
                       onClick={() => onUpdateSettings({ pageSize: size })}
-                      className={`rounded-md py-1 text-[11px] font-medium capitalize transition-all text-center ${
+                      className={`rounded-md py-1 capitalize font-medium transition-colors ${
                         settings.pageSize === size
-                          ? "bg-white dark:bg-neutral-700 text-emerald-600 dark:text-emerald-400 font-semibold shadow-2xs"
-                          : "text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200"
+                          ? "bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white shadow-2xs font-semibold"
+                          : "text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-200"
                       }`}
                     >
                       {size === "continuous" ? "Web Flow" : size.toUpperCase()}
@@ -313,69 +342,87 @@ export function TopNav({
                 </div>
               </div>
 
-              <div className="border-t border-neutral-100 dark:border-neutral-800 pt-2 space-y-2">
-                {/* Sync Scrolling */}
-                <label className="flex items-center justify-between text-xs text-neutral-700 dark:text-neutral-300 cursor-pointer">
-                  <span>Synchronized Scrolling</span>
-                  <input
-                    type="checkbox"
-                    checked={settings.syncScroll}
-                    onChange={(e) =>
-                      onUpdateSettings({ syncScroll: e.target.checked })
-                    }
-                    className="rounded accent-emerald-600"
+              {/* Line Numbers Toggle */}
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-neutral-700 dark:text-neutral-300 font-medium">
+                  Show Line Numbers
+                </span>
+                <button
+                  onClick={() =>
+                    onUpdateSettings({
+                      lineNumbers: !settings.lineNumbers,
+                    })
+                  }
+                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                    settings.lineNumbers ? "bg-emerald-600" : "bg-neutral-300 dark:bg-neutral-700"
+                  }`}
+                >
+                  <span
+                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
+                      settings.lineNumbers ? "translate-x-4" : "translate-x-0"
+                    }`}
                   />
-                </label>
-
-                {/* Line Numbers */}
-                <label className="flex items-center justify-between text-xs text-neutral-700 dark:text-neutral-300 cursor-pointer">
-                  <span>Line Numbers</span>
-                  <input
-                    type="checkbox"
-                    checked={settings.lineNumbers}
-                    onChange={(e) =>
-                      onUpdateSettings({ lineNumbers: e.target.checked })
-                    }
-                    className="rounded accent-emerald-600"
-                  />
-                </label>
-
-                {/* Word Wrap */}
-                <label className="flex items-center justify-between text-xs text-neutral-700 dark:text-neutral-300 cursor-pointer">
-                  <span>Word Wrap</span>
-                  <input
-                    type="checkbox"
-                    checked={settings.wordWrap}
-                    onChange={(e) =>
-                      onUpdateSettings({ wordWrap: e.target.checked })
-                    }
-                    className="rounded accent-emerald-600"
-                  />
-                </label>
+                </button>
               </div>
 
-              {/* Font Size Slider */}
-              <div className="border-t border-neutral-100 dark:border-neutral-800 pt-2">
-                <div className="flex justify-between text-xs text-neutral-700 dark:text-neutral-300 mb-1">
+              {/* Word Wrap Toggle */}
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-neutral-700 dark:text-neutral-300 font-medium">
+                  Editor Word Wrap
+                </span>
+                <button
+                  onClick={() =>
+                    onUpdateSettings({
+                      wordWrap: !settings.wordWrap,
+                    })
+                  }
+                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                    settings.wordWrap ? "bg-emerald-600" : "bg-neutral-300 dark:bg-neutral-700"
+                  }`}
+                >
+                  <span
+                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
+                      settings.wordWrap ? "translate-x-4" : "translate-x-0"
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {/* Font Size Selector */}
+              <div>
+                <div className="flex items-center justify-between text-xs text-neutral-700 dark:text-neutral-300 font-medium mb-1">
                   <span>Editor Font Size</span>
-                  <span className="font-mono text-neutral-400">
+                  <span className="font-mono text-emerald-500 font-bold">
                     {settings.fontSize}px
                   </span>
                 </div>
                 <input
                   type="range"
-                  min="11"
-                  max="20"
+                  min="12"
+                  max="22"
+                  step="1"
                   value={settings.fontSize}
                   onChange={(e) =>
-                    onUpdateSettings({ fontSize: parseInt(e.target.value, 10) })
+                    onUpdateSettings({
+                      fontSize: parseInt(e.target.value, 10),
+                    })
                   }
-                  className="w-full accent-emerald-600"
+                  className="w-full accent-emerald-500 cursor-pointer"
                 />
               </div>
             </div>
           )}
         </div>
+
+        {/* Share Link Button */}
+        <button
+          onClick={handleShareLink}
+          title="Share Instant URL Link (Works Offline)"
+          className="flex items-center gap-1.5 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-800/80 px-2.5 py-1.5 text-xs font-semibold text-neutral-800 dark:text-neutral-200 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors shadow-2xs"
+        >
+          <Link2 className="h-3.5 w-3.5 text-emerald-500" />
+          <span className="hidden sm:inline">Share</span>
+        </button>
 
         {/* Export Dropdown Menu */}
         <div ref={exportRef} className="relative">
