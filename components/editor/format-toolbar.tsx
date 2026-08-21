@@ -134,131 +134,131 @@ graph TD
   };
 
   return (
-    <div className="relative z-20 flex flex-wrap items-center gap-0.5 border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50/90 dark:bg-[#0f141d]/90 px-3 py-1.5 backdrop-blur-xs text-neutral-700 dark:text-neutral-300 shrink-0 select-none overflow-visible">
+    <div className="relative z-20 flex flex-wrap items-center gap-0.5 border-b border-neutral-200/50 dark:border-neutral-800/50 bg-white/40 dark:bg-[#0b0f17]/40 px-3 py-1 backdrop-blur-xs text-neutral-400 shrink-0 select-none overflow-visible">
       {/* Headings */}
       <button
         onClick={() => onInsert("# ", "", "Heading 1")}
         title="Heading 1"
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
       >
         <Heading1 className="h-3.5 w-3.5" />
       </button>
       <button
         onClick={() => onInsert("## ", "", "Heading 2")}
         title="Heading 2"
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
       >
         <Heading2 className="h-3.5 w-3.5" />
       </button>
       <button
         onClick={() => onInsert("### ", "", "Heading 3")}
         title="Heading 3"
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
       >
         <Heading3 className="h-3.5 w-3.5" />
       </button>
 
-      <div className="mx-1 h-4 w-[1px] shrink-0 bg-neutral-300 dark:bg-neutral-700" />
+      <div className="mx-1.5 h-3.5 w-px shrink-0 bg-neutral-200 dark:bg-neutral-800/80" />
 
       {/* Typography Modifiers */}
       <button
         onClick={() => onInsert("**", "**", "bold text")}
         title="Bold (Ctrl+B)"
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
       >
         <Bold className="h-3.5 w-3.5" />
       </button>
       <button
         onClick={() => onInsert("*", "*", "italic text")}
         title="Italic (Ctrl+I)"
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
       >
         <Italic className="h-3.5 w-3.5" />
       </button>
       <button
         onClick={() => onInsert("~~", "~~", "strikethrough text")}
         title="Strikethrough"
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
       >
         <Strikethrough className="h-3.5 w-3.5" />
       </button>
 
-      <div className="mx-1 h-4 w-[1px] shrink-0 bg-neutral-300 dark:bg-neutral-700" />
+      <div className="mx-1.5 h-3.5 w-px shrink-0 bg-neutral-200 dark:bg-neutral-800/80" />
 
       {/* Code and Quotes */}
       <button
         onClick={() => onInsert("`", "`", "code")}
         title="Inline Code"
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
       >
         <Code className="h-3.5 w-3.5" />
       </button>
       <button
         onClick={() => onInsert("```typescript\n", "\n```", "// Code goes here")}
         title="Code Block"
-        className="flex h-7 px-1.5 shrink-0 items-center justify-center gap-1 rounded text-xs font-mono hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
+        className="flex h-7 px-1.5 shrink-0 items-center justify-center gap-1 rounded-md text-xs font-mono text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
       >
         <span>{`{ }`}</span>
       </button>
       <button
         onClick={() => onInsert("> ", "", "quote text")}
         title="Quote"
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
       >
         <Quote className="h-3.5 w-3.5" />
       </button>
 
-      <div className="mx-1 h-4 w-[1px] shrink-0 bg-neutral-300 dark:bg-neutral-700" />
+      <div className="mx-1.5 h-3.5 w-px shrink-0 bg-neutral-200 dark:bg-neutral-800/80" />
 
       {/* Lists & Tasks */}
       <button
         onClick={() => onInsert("- ", "", "List item")}
         title="Bullet List"
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
       >
         <List className="h-3.5 w-3.5" />
       </button>
       <button
         onClick={() => onInsert("1. ", "", "First item")}
         title="Numbered List"
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
       >
         <ListOrdered className="h-3.5 w-3.5" />
       </button>
       <button
         onClick={() => onInsert("- [ ] ", "", "Todo task")}
         title="Task List"
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
       >
         <CheckSquare className="h-3.5 w-3.5" />
       </button>
 
-      <div className="mx-1 h-4 w-[1px] shrink-0 bg-neutral-300 dark:bg-neutral-700" />
+      <div className="mx-1.5 h-3.5 w-px shrink-0 bg-neutral-200 dark:bg-neutral-800/80" />
 
       {/* Links, Images, Tables */}
       <button
         onClick={() => onInsert("[", "](https://example.com)", "link title")}
         title="Insert Link"
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
       >
         <LinkIcon className="h-3.5 w-3.5" />
       </button>
       <button
         onClick={() => onInsert("![", "](https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe)", "Image description")}
         title="Insert Image"
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
       >
         <ImageIcon className="h-3.5 w-3.5" />
       </button>
       <button
         onClick={insertTable}
         title="Insert Table"
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
       >
         <TableIcon className="h-3.5 w-3.5" />
       </button>
 
-      <div className="mx-1 h-4 w-[1px] shrink-0 bg-neutral-300 dark:bg-neutral-700" />
+      <div className="mx-1.5 h-3.5 w-px shrink-0 bg-neutral-200 dark:bg-neutral-800/80" />
 
       {/* GitHub Alerts Dropdown */}
       <div ref={alertRef} className="relative shrink-0">
@@ -267,7 +267,7 @@ graph TD
             setShowAlertMenu(!showAlertMenu);
             setShowMermaidMenu(false);
           }}
-          className="flex h-7 items-center gap-1 rounded px-2 text-xs font-medium hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
+          className="flex h-7 items-center gap-1 rounded-md px-2 text-xs font-medium text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
         >
           <Info className="h-3.5 w-3.5 text-blue-500" />
           <span>Alert</span>
@@ -275,7 +275,7 @@ graph TD
         </button>
 
         {showAlertMenu && (
-          <div className="absolute left-0 top-9 z-50 w-40 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 p-1.5 shadow-2xl backdrop-blur-md">
+          <div className="absolute left-0 top-8 z-50 w-40 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-1.5 shadow-2xl backdrop-blur-md">
             <button
               onClick={() => insertAlert("NOTE")}
               className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs text-left font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/50"
@@ -319,7 +319,7 @@ graph TD
       <button
         onClick={() => onInsert("$$ \n", "\n $$", "E = mc^2")}
         title="KaTeX Display Equation"
-        className="flex h-7 shrink-0 items-center gap-1 rounded px-2 text-xs font-medium hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
+        className="flex h-7 shrink-0 items-center gap-1 rounded-md px-2 text-xs font-medium text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
       >
         <Sigma className="h-3.5 w-3.5 text-emerald-500" />
         <span>Math</span>
@@ -332,7 +332,7 @@ graph TD
             setShowMermaidMenu(!showMermaidMenu);
             setShowAlertMenu(false);
           }}
-          className="flex h-7 items-center gap-1 rounded px-2 text-xs font-medium hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
+          className="flex h-7 items-center gap-1 rounded-md px-2 text-xs font-medium text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
         >
           <GitBranch className="h-3.5 w-3.5 text-indigo-500" />
           <span>Diagram</span>
@@ -340,7 +340,7 @@ graph TD
         </button>
 
         {showMermaidMenu && (
-          <div className="absolute left-0 top-9 z-50 w-44 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 p-1.5 shadow-2xl backdrop-blur-md">
+          <div className="absolute left-0 top-8 z-50 w-44 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-1.5 shadow-2xl backdrop-blur-md">
             <button
               onClick={() => insertMermaid("flowchart")}
               className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-left hover:bg-neutral-100 dark:hover:bg-neutral-800"
@@ -384,7 +384,7 @@ graph TD
           )
         }
         title="Insert Frontmatter Metadata"
-        className="flex h-7 shrink-0 items-center gap-1 rounded px-2 text-xs font-medium hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
+        className="flex h-7 shrink-0 items-center gap-1 rounded-md px-2 text-xs font-medium text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
       >
         <FileCode className="h-3.5 w-3.5 text-rose-500" />
         <span>Frontmatter</span>

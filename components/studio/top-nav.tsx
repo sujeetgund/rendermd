@@ -32,6 +32,7 @@ import {
   Check,
   PanelLeft,
 } from "lucide-react";
+import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import confetti from "canvas-confetti";
 
@@ -83,6 +84,16 @@ export function TopNav({
   const exportRef = useRef<HTMLDivElement>(null);
   const settingsRef = useRef<HTMLDivElement>(null);
 
+  const { theme, setTheme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isDarkTheme = !mounted || resolvedTheme === "dark";
+  const logoSrc = isDarkTheme ? "/logo-horizontal-dark.png" : "/logo-horizontal.png";
+
   useEffect(() => {
     setTitleValue(currentDoc.title);
   }, [currentDoc.title]);
@@ -133,11 +144,11 @@ export function TopNav({
   return (
     <header className="flex h-14 w-full items-center justify-between border-b border-neutral-200 dark:border-neutral-800 bg-white/90 dark:bg-[#0b0f17]/90 px-4 backdrop-blur-md z-40 select-none">
       {/* Left Section: Logo & Document Title */}
-      <div className="flex items-center gap-3 min-w-0">
+      <div className="flex items-center gap-2.5 min-w-0">
         <button
           onClick={onOpenDocDrawer}
           title="Open Document Manager"
-          className="flex items-center gap-2 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-1.5 text-xs font-semibold text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+          className="flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/80 transition-colors"
         >
           <PanelLeft className="h-4 w-4 text-emerald-500" />
         </button>
@@ -146,9 +157,9 @@ export function TopNav({
           {/* Logo Mark */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/logo.png"
+            src={logoSrc}
             alt="rendermd logo"
-            className="h-5 w-5 rounded object-contain shrink-0"
+            className="h-7 w-auto object-contain shrink-0 rounded-md"
           />
           <span className="text-neutral-300 dark:text-neutral-700">/</span>
         </div>
@@ -174,7 +185,7 @@ export function TopNav({
           <button
             onClick={() => setIsEditingTitle(true)}
             title="Click to rename document"
-            className="group flex items-center gap-1.5 truncate rounded px-2 py-1 text-xs font-semibold text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+            className="group flex items-center gap-1.5 truncate rounded px-2 py-1 text-xs font-semibold text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/60"
           >
             <span className="truncate max-w-[200px]">{currentDoc.title}</span>
             <Edit3 className="h-3 w-3 opacity-0 group-hover:opacity-60 transition-opacity" />
@@ -182,44 +193,27 @@ export function TopNav({
         )}
       </div>
 
-      {/* Middle Section: Preset Selector & Page View Config */}
-      <div className="hidden lg:flex items-center gap-3">
+      {/* Middle Section: Preset Selector */}
+      <div className="hidden md:flex items-center gap-3">
         <PresetSelector
           currentPresetId={currentDoc.presetId}
           onSelectPreset={onSelectPreset}
           onOpenCustomizer={onOpenCustomizer}
           customPreset={currentDoc.customPreset}
         />
-
-        {/* Page Size Picker */}
-        <div className="flex items-center rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-0.5 text-xs">
-          {(["continuous", "a4", "letter"] as PageSize[]).map((size) => (
-            <button
-              key={size}
-              onClick={() => onUpdateSettings({ pageSize: size })}
-              className={`rounded-md px-2.5 py-1 text-[11px] font-medium capitalize transition-all ${
-                settings.pageSize === size
-                  ? "bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white shadow-2xs font-semibold"
-                  : "text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200"
-              }`}
-            >
-              {size === "continuous" ? "Web Flow" : size.toUpperCase()}
-            </button>
-          ))}
-        </div>
       </div>
 
-      {/* Right Section: View Switcher, TOC, Settings, Export */}
-      <div className="flex items-center gap-2">
+      {/* Right Section: View Switcher, TOC, Theme, Settings, Export */}
+      <div className="flex items-center gap-1.5">
         {/* View Mode Toggle (Split, Editor, Preview, Zen) */}
-        <div className="flex items-center rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-0.5 text-xs">
+        <div className="flex items-center rounded-lg bg-neutral-100 dark:bg-neutral-900 p-0.5 text-xs">
           <button
             onClick={() => onChangeViewMode("split")}
             title="Split Mode (Editor + Preview)"
             className={`rounded-md p-1.5 transition-all ${
               viewMode === "split"
-                ? "bg-white dark:bg-neutral-800 text-emerald-600 dark:text-emerald-400 shadow-2xs"
-                : "text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200"
+                ? "bg-white dark:bg-neutral-800 text-emerald-600 dark:text-emerald-400 shadow-2xs font-semibold"
+                : "text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200"
             }`}
           >
             <Columns2 className="h-3.5 w-3.5" />
@@ -229,8 +223,8 @@ export function TopNav({
             title="Editor Only"
             className={`rounded-md p-1.5 transition-all ${
               viewMode === "editor"
-                ? "bg-white dark:bg-neutral-800 text-emerald-600 dark:text-emerald-400 shadow-2xs"
-                : "text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200"
+                ? "bg-white dark:bg-neutral-800 text-emerald-600 dark:text-emerald-400 shadow-2xs font-semibold"
+                : "text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200"
             }`}
           >
             <FileText className="h-3.5 w-3.5" />
@@ -240,8 +234,8 @@ export function TopNav({
             title="Preview Only"
             className={`rounded-md p-1.5 transition-all ${
               viewMode === "preview"
-                ? "bg-white dark:bg-neutral-800 text-emerald-600 dark:text-emerald-400 shadow-2xs"
-                : "text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200"
+                ? "bg-white dark:bg-neutral-800 text-emerald-600 dark:text-emerald-400 shadow-2xs font-semibold"
+                : "text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200"
             }`}
           >
             <Eye className="h-3.5 w-3.5" />
@@ -251,19 +245,32 @@ export function TopNav({
             title="Zen Focus Mode"
             className={`rounded-md p-1.5 transition-all ${
               viewMode === "zen"
-                ? "bg-white dark:bg-neutral-800 text-purple-600 dark:text-purple-400 shadow-2xs"
-                : "text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200"
+                ? "bg-white dark:bg-neutral-800 text-purple-600 dark:text-purple-400 shadow-2xs font-semibold"
+                : "text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200"
             }`}
           >
             <Maximize className="h-3.5 w-3.5" />
           </button>
         </div>
 
+        {/* Theme Mode Toggle */}
+        <button
+          onClick={() => setTheme(isDarkTheme ? "light" : "dark")}
+          title={`Switch to ${isDarkTheme ? "Light" : "Dark"} Mode`}
+          className="flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/80 transition-colors"
+        >
+          {isDarkTheme ? (
+            <Sun className="h-3.5 w-3.5 text-amber-400" />
+          ) : (
+            <Moon className="h-3.5 w-3.5 text-neutral-600" />
+          )}
+        </button>
+
         {/* Outline / TOC Toggle */}
         <button
           onClick={onOpenTocDrawer}
           title="Document Outline / Table of Contents"
-          className="flex h-8 w-8 items-center justify-center rounded-lg border border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+          className="flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/80 transition-colors"
         >
           <ListTree className="h-3.5 w-3.5" />
         </button>
@@ -273,7 +280,7 @@ export function TopNav({
           <button
             onClick={() => setShowSettingsMenu(!showSettingsMenu)}
             title="Studio Settings"
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/80 transition-colors"
           >
             <Settings2 className="h-3.5 w-3.5" />
           </button>
@@ -284,47 +291,71 @@ export function TopNav({
                 Studio Preferences
               </div>
 
-              {/* Sync Scrolling */}
-              <label className="flex items-center justify-between text-xs text-neutral-700 dark:text-neutral-300 cursor-pointer">
-                <span>Synchronized Scrolling</span>
-                <input
-                  type="checkbox"
-                  checked={settings.syncScroll}
-                  onChange={(e) =>
-                    onUpdateSettings({ syncScroll: e.target.checked })
-                  }
-                  className="rounded accent-emerald-600"
-                />
-              </label>
+              {/* Page Layout Size */}
+              <div>
+                <div className="text-xs text-neutral-700 dark:text-neutral-300 mb-1.5 font-medium">
+                  Page Layout
+                </div>
+                <div className="grid grid-cols-3 gap-1 rounded-lg bg-neutral-100 dark:bg-neutral-800 p-1 text-xs">
+                  {(["continuous", "a4", "letter"] as PageSize[]).map((size) => (
+                    <button
+                      key={size}
+                      onClick={() => onUpdateSettings({ pageSize: size })}
+                      className={`rounded-md py-1 text-[11px] font-medium capitalize transition-all text-center ${
+                        settings.pageSize === size
+                          ? "bg-white dark:bg-neutral-700 text-emerald-600 dark:text-emerald-400 font-semibold shadow-2xs"
+                          : "text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200"
+                      }`}
+                    >
+                      {size === "continuous" ? "Web Flow" : size.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-              {/* Line Numbers */}
-              <label className="flex items-center justify-between text-xs text-neutral-700 dark:text-neutral-300 cursor-pointer">
-                <span>Line Numbers</span>
-                <input
-                  type="checkbox"
-                  checked={settings.lineNumbers}
-                  onChange={(e) =>
-                    onUpdateSettings({ lineNumbers: e.target.checked })
-                  }
-                  className="rounded accent-emerald-600"
-                />
-              </label>
+              <div className="border-t border-neutral-100 dark:border-neutral-800 pt-2 space-y-2">
+                {/* Sync Scrolling */}
+                <label className="flex items-center justify-between text-xs text-neutral-700 dark:text-neutral-300 cursor-pointer">
+                  <span>Synchronized Scrolling</span>
+                  <input
+                    type="checkbox"
+                    checked={settings.syncScroll}
+                    onChange={(e) =>
+                      onUpdateSettings({ syncScroll: e.target.checked })
+                    }
+                    className="rounded accent-emerald-600"
+                  />
+                </label>
 
-              {/* Word Wrap */}
-              <label className="flex items-center justify-between text-xs text-neutral-700 dark:text-neutral-300 cursor-pointer">
-                <span>Word Wrap</span>
-                <input
-                  type="checkbox"
-                  checked={settings.wordWrap}
-                  onChange={(e) =>
-                    onUpdateSettings({ wordWrap: e.target.checked })
-                  }
-                  className="rounded accent-emerald-600"
-                />
-              </label>
+                {/* Line Numbers */}
+                <label className="flex items-center justify-between text-xs text-neutral-700 dark:text-neutral-300 cursor-pointer">
+                  <span>Line Numbers</span>
+                  <input
+                    type="checkbox"
+                    checked={settings.lineNumbers}
+                    onChange={(e) =>
+                      onUpdateSettings({ lineNumbers: e.target.checked })
+                    }
+                    className="rounded accent-emerald-600"
+                  />
+                </label>
+
+                {/* Word Wrap */}
+                <label className="flex items-center justify-between text-xs text-neutral-700 dark:text-neutral-300 cursor-pointer">
+                  <span>Word Wrap</span>
+                  <input
+                    type="checkbox"
+                    checked={settings.wordWrap}
+                    onChange={(e) =>
+                      onUpdateSettings({ wordWrap: e.target.checked })
+                    }
+                    className="rounded accent-emerald-600"
+                  />
+                </label>
+              </div>
 
               {/* Font Size Slider */}
-              <div>
+              <div className="border-t border-neutral-100 dark:border-neutral-800 pt-2">
                 <div className="flex justify-between text-xs text-neutral-700 dark:text-neutral-300 mb-1">
                   <span>Editor Font Size</span>
                   <span className="font-mono text-neutral-400">
