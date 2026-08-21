@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Newsreader } from "next/font/google";
+import { ThemeProvider } from "@/components/theme-provider";
 import "katex/dist/katex.min.css";
 import "./globals.css";
 
@@ -36,10 +37,18 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${jetbrainsMono.variable} ${newsreader.variable} dark h-full antialiased`}
+      suppressHydrationWarning
+      className={`${inter.variable} ${jetbrainsMono.variable} ${newsreader.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#090d16] text-neutral-100 selection:bg-blue-500/30 selection:text-blue-200">
-        {children}
+      <body className="min-h-full flex flex-col bg-background text-foreground selection:bg-blue-500/20 dark:selection:bg-emerald-500/30">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
