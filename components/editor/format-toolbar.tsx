@@ -21,6 +21,7 @@ import {
   Info,
   ChevronDown,
   FileCode,
+  Braces,
 } from "lucide-react";
 import { AlertType } from "@/components/preview/alert-block";
 
@@ -38,10 +39,16 @@ export function FormatToolbar({ onInsert }: FormatToolbarProps) {
   // Close menus when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (alertRef.current && !alertRef.current.contains(event.target as Node)) {
+      if (
+        alertRef.current &&
+        !alertRef.current.contains(event.target as Node)
+      ) {
         setShowAlertMenu(false);
       }
-      if (mermaidRef.current && !mermaidRef.current.contains(event.target as Node)) {
+      if (
+        mermaidRef.current &&
+        !mermaidRef.current.contains(event.target as Node)
+      ) {
         setShowMermaidMenu(false);
       }
     };
@@ -134,7 +141,7 @@ graph TD
   };
 
   return (
-    <div className="relative z-20 flex flex-wrap items-center gap-0.5 border-b border-neutral-200/50 dark:border-neutral-800/50 bg-white/40 dark:bg-[#0b0f17]/40 px-3 py-1 backdrop-blur-xs text-neutral-400 shrink-0 select-none overflow-visible">
+    <div className="relative z-20 flex flex-wrap items-center gap-1 border-b border-neutral-200/50 dark:border-neutral-800/50 bg-white/40 dark:bg-[#0b0f17]/40 px-3 py-1 backdrop-blur-xs text-neutral-400 shrink-0 select-none">
       {/* Headings */}
       <button
         onClick={() => onInsert("# ", "", "Heading 1")}
@@ -158,7 +165,7 @@ graph TD
         <Heading3 className="h-3.5 w-3.5" />
       </button>
 
-      <div className="mx-1.5 h-3.5 w-px shrink-0 bg-neutral-200 dark:bg-neutral-800/80" />
+      <div className="mx-1 h-3.5 w-px shrink-0 bg-neutral-200 dark:bg-neutral-800/80" />
 
       {/* Typography Modifiers */}
       <button
@@ -182,69 +189,62 @@ graph TD
       >
         <Strikethrough className="h-3.5 w-3.5" />
       </button>
-
-      <div className="mx-1.5 h-3.5 w-px shrink-0 bg-neutral-200 dark:bg-neutral-800/80" />
-
-      {/* Code and Quotes */}
       <button
-        onClick={() => onInsert("`", "`", "code")}
+        onClick={() => onInsert("`", "`", "inline code")}
         title="Inline Code"
         className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
       >
         <Code className="h-3.5 w-3.5" />
       </button>
       <button
-        onClick={() => onInsert("```typescript\n", "\n```", "// Code goes here")}
+        onClick={() =>
+          onInsert("```javascript\n", "\n```", "console.log('hello');")
+        }
         title="Code Block"
-        className="flex h-7 px-1.5 shrink-0 items-center justify-center gap-1 rounded-md text-xs font-mono text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
-      >
-        <span>{`{ }`}</span>
-      </button>
-      <button
-        onClick={() => onInsert("> ", "", "quote text")}
-        title="Quote"
         className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
       >
-        <Quote className="h-3.5 w-3.5" />
+        <Braces className="h-3.5 w-3.5" />
       </button>
 
-      <div className="mx-1.5 h-3.5 w-px shrink-0 bg-neutral-200 dark:bg-neutral-800/80" />
+      <div className="mx-1 h-3.5 w-px shrink-0 bg-neutral-200 dark:bg-neutral-800/80" />
 
-      {/* Lists & Tasks */}
+      {/* Lists & Media */}
       <button
         onClick={() => onInsert("- ", "", "List item")}
-        title="Bullet List"
+        title="Unordered List"
         className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
       >
         <List className="h-3.5 w-3.5" />
       </button>
       <button
-        onClick={() => onInsert("1. ", "", "First item")}
+        onClick={() => onInsert("1. ", "", "List item")}
         title="Numbered List"
         className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
       >
         <ListOrdered className="h-3.5 w-3.5" />
       </button>
       <button
-        onClick={() => onInsert("- [ ] ", "", "Todo task")}
+        onClick={() => onInsert("- [ ] ", "", "Task item")}
         title="Task List"
         className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
       >
         <CheckSquare className="h-3.5 w-3.5" />
       </button>
-
-      <div className="mx-1.5 h-3.5 w-px shrink-0 bg-neutral-200 dark:bg-neutral-800/80" />
-
-      {/* Links, Images, Tables */}
       <button
-        onClick={() => onInsert("[", "](https://example.com)", "link title")}
+        onClick={() => onInsert("[", "](https://example.com)", "link text")}
         title="Insert Link"
         className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
       >
         <LinkIcon className="h-3.5 w-3.5" />
       </button>
       <button
-        onClick={() => onInsert("![", "](https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe)", "Image description")}
+        onClick={() =>
+          onInsert(
+            "![",
+            "](https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe)",
+            "alt text",
+          )
+        }
         title="Insert Image"
         className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
       >
@@ -252,13 +252,13 @@ graph TD
       </button>
       <button
         onClick={insertTable}
-        title="Insert Table"
+        title="Insert Markdown Table"
         className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors"
       >
         <TableIcon className="h-3.5 w-3.5" />
       </button>
 
-      <div className="mx-1.5 h-3.5 w-px shrink-0 bg-neutral-200 dark:bg-neutral-800/80" />
+      <div className="mx-1 h-3.5 w-px shrink-0 bg-neutral-200 dark:bg-neutral-800/80" />
 
       {/* GitHub Alerts Dropdown */}
       <div ref={alertRef} className="relative shrink-0">
@@ -275,7 +275,7 @@ graph TD
         </button>
 
         {showAlertMenu && (
-          <div className="absolute left-0 top-8 z-50 w-40 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-1.5 shadow-2xl backdrop-blur-md">
+          <div className="absolute left-0 top-full mt-1 z-50 w-40 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-1.5 shadow-2xl backdrop-blur-md animate-in fade-in zoom-in-95 duration-100">
             <button
               onClick={() => insertAlert("NOTE")}
               className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs text-left font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/50"
@@ -340,7 +340,7 @@ graph TD
         </button>
 
         {showMermaidMenu && (
-          <div className="absolute left-0 top-8 z-50 w-44 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-1.5 shadow-2xl backdrop-blur-md">
+          <div className="absolute left-0 top-full mt-1 z-50 w-44 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-1.5 shadow-2xl backdrop-blur-md animate-in fade-in zoom-in-95 duration-100">
             <button
               onClick={() => insertMermaid("flowchart")}
               className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-left hover:bg-neutral-100 dark:hover:bg-neutral-800"
@@ -380,7 +380,7 @@ graph TD
         onClick={() =>
           onInsert(
             `---\ntitle: "Document Title"\ndescription: "Brief summary or abstract of the document"\nauthor: "Your Name"\ndate: "${new Date().toISOString().split("T")[0]}"\ntags: [markdown, frontmatter, document]\ndraft: false\n---\n\n`,
-            ""
+            "",
           )
         }
         title="Insert Frontmatter Metadata"

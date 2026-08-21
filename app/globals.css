@@ -115,21 +115,47 @@
 }
 
 .markdown-document h1 {
-  font-size: 2.15em;
+  font-size: clamp(1.5rem, 3.5vw, 2.15em);
   border-bottom: 1px solid var(--md-border, #e5e7eb);
   padding-bottom: 0.3em;
+  word-break: break-word;
 }
 
 .markdown-document h2 {
-  font-size: 1.55em;
+  font-size: clamp(1.25rem, 2.8vw, 1.55em);
   border-bottom: 1px solid var(--md-border, #e5e7eb);
   padding-bottom: 0.25em;
+  word-break: break-word;
 }
 
-.markdown-document h3 { font-size: 1.3em; }
+.markdown-document h3 {
+  font-size: clamp(1.1rem, 2.2vw, 1.3em);
+  word-break: break-word;
+}
 .markdown-document h4 { font-size: 1.1em; }
 .markdown-document h5 { font-size: 0.95em; }
 .markdown-document h6 { font-size: 0.85em; opacity: 0.8; }
+
+/* KaTeX Display Math Component-Level Horizontal Scroll */
+.markdown-document .katex-display,
+.katex-display {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  padding: 0.5rem 0 !important;
+  margin: 1.25rem 0 !important;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.markdown-document .katex-display > .katex,
+.katex-display > .katex {
+  display: inline-block !important;
+  white-space: nowrap !important;
+  max-width: none !important;
+}
 
 .markdown-document p {
   margin-top: 0;

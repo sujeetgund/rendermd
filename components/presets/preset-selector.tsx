@@ -77,8 +77,11 @@ export function PresetSelector({
         <span className="flex h-5 w-5 items-center justify-center rounded bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300">
           {getPresetIcon(currentPresetId)}
         </span>
-        <span className="font-medium">
+        <span className="hidden sm:inline font-medium">
           Preset: <span className="font-semibold text-neutral-950 dark:text-white">{activePreset?.name || "Custom"}</span>
+        </span>
+        <span className="sm:hidden font-semibold text-neutral-950 dark:text-white">
+          {activePreset?.name || "Custom"}
         </span>
         <ChevronDown className="h-3.5 w-3.5 text-neutral-400" />
       </button>

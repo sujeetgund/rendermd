@@ -78,7 +78,7 @@ export function DocumentDrawer({
 
   return (
     <div className="fixed inset-0 z-50 flex bg-black/60 backdrop-blur-xs">
-      <div className="flex h-full w-80 flex-col border-r border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4 shadow-2xl animate-in slide-in-from-left duration-200">
+      <div className="flex h-full w-[85vw] sm:w-80 flex-col border-r border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4 shadow-2xl animate-in slide-in-from-left duration-200">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 pb-3">
           <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-neutral-900 dark:text-white">

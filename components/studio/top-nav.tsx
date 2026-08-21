@@ -94,7 +94,9 @@ export function TopNav({
   }, []);
 
   const isDarkTheme = !mounted || resolvedTheme === "dark";
-  const logoSrc = isDarkTheme ? "/logo-horizontal-dark.png" : "/logo-horizontal.png";
+  const logoSrc = isDarkTheme
+    ? "/logo-horizontal-dark.png"
+    : "/logo-horizontal.png";
 
   useEffect(() => {
     setTitleValue(currentDoc.title);
@@ -133,11 +135,11 @@ export function TopNav({
       const shareUrl = generateShareUrl(
         currentDoc.title,
         currentDoc.content,
-        currentDoc.presetId
+        currentDoc.presetId,
       );
       navigator.clipboard.writeText(shareUrl).then(() => {
         toast.success("Share link copied to clipboard!", {
-          description: "Anyone opening this URL gets the document instantly (works offline).",
+          description: "",
         });
       });
       try {
@@ -214,10 +216,10 @@ export function TopNav({
           <button
             onClick={() => setIsEditingTitle(true)}
             title="Click to rename document"
-            className="group flex items-center gap-1.5 rounded-md px-2 py-1 text-sm font-semibold text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/70 transition-colors truncate max-w-[220px] sm:max-w-[320px]"
+            className="group flex items-center gap-1.5 rounded-md px-1.5 py-1 text-xs sm:text-sm font-semibold text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/70 transition-colors truncate max-w-[150px] xs:max-w-[210px] sm:max-w-[360px]"
           >
             <span className="truncate">{currentDoc.title}</span>
-            <Edit3 className="h-3 w-3 opacity-0 group-hover:opacity-60 transition-opacity shrink-0" />
+            <Edit3 className="h-3 w-3 opacity-0 group-hover:opacity-60 transition-opacity shrink-0 hidden xs:inline-block" />
           </button>
         )}
       </div>
@@ -234,8 +236,8 @@ export function TopNav({
 
       {/* Right Section: View Switcher, TOC, Theme, Settings, Export */}
       <div className="flex items-center gap-1.5">
-        {/* View Mode Toggle (Split, Editor, Preview, Zen) */}
-        <div className="flex items-center rounded-lg bg-neutral-100 dark:bg-neutral-900 p-0.5 text-xs">
+        {/* View Mode Segment Control */}
+        <div className="hidden sm:flex items-center rounded-lg bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-0.5 text-xs">
           <button
             onClick={() => onChangeViewMode("split")}
             title="Split Mode (Editor + Preview)"
@@ -282,11 +284,11 @@ export function TopNav({
           </button>
         </div>
 
-        {/* Theme Mode Toggle */}
+        {/* Theme Mode Toggle (Desktop) */}
         <button
           onClick={() => setTheme(isDarkTheme ? "light" : "dark")}
           title={`Switch to ${isDarkTheme ? "Light" : "Dark"} Mode`}
-          className="flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/80 transition-colors"
+          className="hidden sm:flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/80 transition-colors"
         >
           {isDarkTheme ? (
             <Sun className="h-3.5 w-3.5 text-amber-400" />
@@ -295,11 +297,11 @@ export function TopNav({
           )}
         </button>
 
-        {/* Outline / TOC Toggle */}
+        {/* Outline / TOC Toggle (Desktop) */}
         <button
           onClick={onOpenTocDrawer}
           title="Document Outline / Table of Contents"
-          className="flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/80 transition-colors"
+          className="hidden sm:flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/80 transition-colors"
         >
           <ListTree className="h-3.5 w-3.5" />
         </button>
@@ -326,19 +328,23 @@ export function TopNav({
                   Page Layout
                 </div>
                 <div className="grid grid-cols-3 gap-1 rounded-lg bg-neutral-100 dark:bg-neutral-800 p-1 text-xs">
-                  {(["continuous", "a4", "letter"] as PageSize[]).map((size) => (
-                    <button
-                      key={size}
-                      onClick={() => onUpdateSettings({ pageSize: size })}
-                      className={`rounded-md py-1 capitalize font-medium transition-colors ${
-                        settings.pageSize === size
-                          ? "bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white shadow-2xs font-semibold"
-                          : "text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-200"
-                      }`}
-                    >
-                      {size === "continuous" ? "Web Flow" : size.toUpperCase()}
-                    </button>
-                  ))}
+                  {(["continuous", "a4", "letter"] as PageSize[]).map(
+                    (size) => (
+                      <button
+                        key={size}
+                        onClick={() => onUpdateSettings({ pageSize: size })}
+                        className={`rounded-md py-1 capitalize font-medium transition-colors ${
+                          settings.pageSize === size
+                            ? "bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white shadow-2xs font-semibold"
+                            : "text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-200"
+                        }`}
+                      >
+                        {size === "continuous"
+                          ? "Web Flow"
+                          : size.toUpperCase()}
+                      </button>
+                    ),
+                  )}
                 </div>
               </div>
 
@@ -354,7 +360,9 @@ export function TopNav({
                     })
                   }
                   className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
-                    settings.lineNumbers ? "bg-emerald-600" : "bg-neutral-300 dark:bg-neutral-700"
+                    settings.lineNumbers
+                      ? "bg-emerald-600"
+                      : "bg-neutral-300 dark:bg-neutral-700"
                   }`}
                 >
                   <span
@@ -377,7 +385,9 @@ export function TopNav({
                     })
                   }
                   className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
-                    settings.wordWrap ? "bg-emerald-600" : "bg-neutral-300 dark:bg-neutral-700"
+                    settings.wordWrap
+                      ? "bg-emerald-600"
+                      : "bg-neutral-300 dark:bg-neutral-700"
                   }`}
                 >
                   <span
@@ -414,18 +424,18 @@ export function TopNav({
           )}
         </div>
 
-        {/* Share Link Button */}
+        {/* Share Link Button (Desktop) */}
         <button
           onClick={handleShareLink}
           title="Share Instant URL Link (Works Offline)"
-          className="flex items-center gap-1.5 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-800/80 px-2.5 py-1.5 text-xs font-semibold text-neutral-800 dark:text-neutral-200 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors shadow-2xs"
+          className="hidden sm:flex items-center gap-1.5 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-800/80 px-2.5 py-1.5 text-xs font-semibold text-neutral-800 dark:text-neutral-200 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors shadow-2xs"
         >
           <Link2 className="h-3.5 w-3.5 text-emerald-500" />
-          <span className="hidden sm:inline">Share</span>
+          <span>Share</span>
         </button>
 
-        {/* Export Dropdown Menu */}
-        <div ref={exportRef} className="relative">
+        {/* Export Dropdown Menu (Desktop) */}
+        <div ref={exportRef} className="hidden sm:block relative">
           <button
             onClick={() => setShowExportMenu(!showExportMenu)}
             className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white shadow-xs hover:bg-emerald-700 transition-colors"

@@ -68,7 +68,7 @@ export function SplitPane({
       {/* Left Pane (Editor) */}
       <div
         style={{ width: `${splitPercent}%` }}
-        className="h-full overflow-hidden flex flex-col"
+        className="hidden md:flex h-full overflow-hidden flex-col"
       >
         {left}
       </div>
@@ -76,17 +76,22 @@ export function SplitPane({
       {/* Resizer Divider */}
       <div
         onMouseDown={startDragging}
-        className="group relative z-20 flex w-2 shrink-0 cursor-col-resize items-center justify-center bg-neutral-200 dark:bg-neutral-800 transition-colors hover:bg-emerald-500/50"
+        className="hidden md:flex group relative z-20 w-2 shrink-0 cursor-col-resize items-center justify-center bg-neutral-200 dark:bg-neutral-800 transition-colors hover:bg-emerald-500/50"
       >
         <div className="h-8 w-1 rounded-full bg-neutral-400 group-hover:bg-emerald-500 transition-colors" />
       </div>
 
-      {/* Right Pane (Preview) */}
+      {/* Right Pane (Preview on Desktop, Full Width on Mobile Split Fallback) */}
       <div
         style={{ width: `${100 - splitPercent}%` }}
-        className="h-full overflow-y-auto bg-neutral-100/50 dark:bg-[#070a10]"
+        className="hidden md:block h-full overflow-y-auto bg-neutral-100/50 dark:bg-[#070a10]"
       >
         {right}
+      </div>
+
+      {/* Mobile Split Fallback: Fullscreen Editor on Mobile */}
+      <div className="md:hidden h-full w-full overflow-hidden flex flex-col">
+        {left}
       </div>
     </div>
   );

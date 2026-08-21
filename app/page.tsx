@@ -36,6 +36,7 @@ import {
 
 import { TopNav } from "@/components/studio/top-nav";
 import { SplitPane } from "@/components/studio/split-pane";
+import { AppleDock } from "@/components/studio/apple-dock";
 import { MarkdownEditor } from "@/components/editor/markdown-editor";
 import { FormatToolbar } from "@/components/editor/format-toolbar";
 import { MarkdownPreview } from "@/components/preview/markdown-preview";
@@ -533,8 +534,8 @@ export default function RendermdStudio() {
                   fontSize={settings.fontSize}
                 />
               </div>
-              {/* Bottom Editor Status Bar */}
-              <div className="flex h-7 items-center justify-between border-t border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-[#0a0d14] px-3">
+              {/* Bottom Editor Status Bar (Desktop only) */}
+              <div className="hidden sm:flex h-7 items-center justify-between border-t border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-[#0a0d14] px-3">
                 <StatsBadge stats={stats} />
                 <span className="text-[10px] font-mono text-neutral-400">
                   {currentDoc.presetId.toUpperCase()} • UTF-8
@@ -546,7 +547,7 @@ export default function RendermdStudio() {
             <div
               ref={previewRef}
               onScroll={handlePreviewScroll}
-              className="h-full w-full overflow-y-auto bg-neutral-100/60 dark:bg-[#06080d]"
+              className="h-full w-full overflow-y-auto bg-white dark:bg-[#090d16] sm:bg-neutral-100/60 sm:dark:bg-[#06080d]"
             >
               <MarkdownPreview
                 content={currentDoc.content}
@@ -584,6 +585,21 @@ export default function RendermdStudio() {
         onClose={() => setIsCustomThemeOpen(false)}
         preset={activePreset}
         onSavePreset={handleSaveCustomPreset}
+      />
+
+      {/* Floating Glassmorphism Apple Dock for Mobile Devices */}
+      <AppleDock
+        viewMode={viewMode}
+        onChangeViewMode={setViewMode}
+        currentPresetId={currentDoc.presetId}
+        onSelectPreset={(id) => selectPreset(id)}
+        onOpenCustomizer={() => setIsCustomThemeOpen(true)}
+        documentTitle={currentDoc.title}
+        documentContent={currentDoc.content}
+        onOpenTocDrawer={() => setIsTocDrawerOpen(!isTocDrawerOpen)}
+        onExportHtml={handleExportHtml}
+        onExportPdf={handleExportPdf}
+        onExportImage={handleExportImage}
       />
     </div>
   );

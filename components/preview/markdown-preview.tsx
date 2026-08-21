@@ -44,12 +44,12 @@ export function MarkdownPreview({
   const pageSizeClass = useMemo(() => {
     switch (pageSize) {
       case "a4":
-        return "max-w-[794px] min-h-[1123px] shadow-lg my-8 mx-auto border border-neutral-200 dark:border-neutral-800 rounded-sm";
+        return "w-full sm:max-w-[794px] min-h-screen sm:min-h-[1123px] sm:shadow-lg my-0 sm:my-8 mx-auto border-0 sm:border border-neutral-200 dark:border-neutral-800 rounded-none sm:rounded-sm";
       case "letter":
-        return "max-w-[816px] min-h-[1056px] shadow-lg my-8 mx-auto border border-neutral-200 dark:border-neutral-800 rounded-sm";
+        return "w-full sm:max-w-[816px] min-h-screen sm:min-h-[1056px] sm:shadow-lg my-0 sm:my-8 mx-auto border-0 sm:border border-neutral-200 dark:border-neutral-800 rounded-none sm:rounded-sm";
       case "continuous":
       default:
-        return "w-full max-w-[var(--md-max-width)] mx-auto";
+        return "w-full max-w-full sm:max-w-[var(--md-max-width)] mx-auto";
     }
   }, [pageSize]);
 
@@ -57,7 +57,7 @@ export function MarkdownPreview({
     <div
       id={id}
       style={cssVariables as React.CSSProperties}
-      className={`markdown-document relative px-[var(--md-padding-page)] py-8 transition-colors duration-200 ${pageSizeClass} ${className}`}
+      className={`markdown-document relative px-4 sm:px-[var(--md-padding-page)] py-5 sm:py-8 transition-colors duration-200 ${pageSizeClass} ${className}`}
     >
       <FrontmatterBlock frontmatter={frontmatter} preset={preset} />
       <ReactMarkdown
