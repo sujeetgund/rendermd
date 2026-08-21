@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono, Newsreader } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ServiceWorkerRegister } from "@/components/service-worker-register";
 import "katex/dist/katex.min.css";
 import "./globals.css";
 
@@ -24,9 +25,20 @@ export const metadata: Metadata = {
   title: "rendermd — Lightweight & Beautiful Markdown Studio",
   description:
     "Local-first Markdown studio with unified presets for typography, KaTeX math, and Mermaid diagrams.",
+  manifest: "/manifest.json",
   icons: {
     icon: "/logo.png",
+    apple: "/logo.png",
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "rendermd",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#090d16",
 };
 
 export default function RootLayout({
@@ -47,6 +59,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <ServiceWorkerRegister />
           {children}
         </ThemeProvider>
       </body>

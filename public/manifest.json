@@ -1,0 +1,24 @@
+{
+  "name": "rendermd",
+  "short_name": "rendermd",
+  "description": "Local-first Markdown studio with unified design presets for typography, LaTeX math, and Mermaid diagrams.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#090d16",
+  "theme_color": "#090d16",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo-dark.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

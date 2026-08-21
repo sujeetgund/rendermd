@@ -131,6 +131,13 @@ export default function RendermdStudio() {
     return extractTocFromMarkdown(currentDoc.content || "");
   }, [currentDoc.content]);
 
+  // Sync document title to browser window title bar
+  useEffect(() => {
+    if (isHydrated && currentDoc?.title) {
+      document.title = `${currentDoc.title} — rendermd`;
+    }
+  }, [currentDoc?.title, isHydrated]);
+
   // Document state mutators
   const updateContent = useCallback(
     (newContent: string) => {
