@@ -32,9 +32,9 @@ export const editorialPreset: DocumentPreset = {
     link: "#c2410c",
     linkHover: "#9a3412",
 
-    codeBackground: "#f5eee4",
+    codeBackground: "rgba(68, 64, 60, 0.06)",
     codeForeground: "#44403c",
-    codeBorder: "#e2d6c6",
+    codeBorder: "rgba(68, 64, 60, 0.12)",
 
     quoteBackground: "#fcf6ed",
     quoteBorder: "#c2410c",

@@ -1,6 +1,10 @@
 <div align="center">
 
-<img src="public/logo.png" alt="rendermd logo" width="110" style="border-radius: 20px;" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="public/logo-horizontal-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="public/logo-horizontal.png">
+  <img src="public/logo-horizontal.png" alt="rendermd logo" width="280" />
+</picture>
 <hr />
 
 **rendermd is the local-first Markdown studio with unified design presets for typography, LaTeX math, and Mermaid diagrams.**

@@ -149,13 +149,30 @@ export function MarkdownPreview({
           input: ({ type, checked, ...props }) => {
             if (type === "checkbox") {
               return (
-                <input
-                  type="checkbox"
-                  checked={checked}
-                  readOnly
-                  className="mr-2 h-4 w-4 rounded accent-[var(--md-accent)] cursor-default"
-                  {...props}
-                />
+                <span className="inline-flex items-center align-middle mr-2 -mt-0.5 select-none" {...props}>
+                  <span
+                    className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-xs border transition-all ${
+                      checked
+                        ? "bg-[var(--md-accent)] border-[var(--md-accent)] text-white shadow-2xs"
+                        : "border-neutral-400/60 dark:border-neutral-600 bg-white/60 dark:bg-neutral-800/60"
+                    }`}
+                  >
+                    {checked && (
+                      <svg
+                        className="h-3 w-3 stroke-[3]"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    )}
+                  </span>
+                </span>
               );
             }
             return <input type={type} {...props} />;
