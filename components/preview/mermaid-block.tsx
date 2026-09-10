@@ -284,114 +284,135 @@ export function MermaidBlock({ chart, preset }: MermaidBlockProps) {
       </div>
 
       {/* ========================================================================= */}
-      {/* Premium Diagram Studio Inspection Modal */}
+      {/* Sleek Diagram Inspection Modal */}
       {/* ========================================================================= */}
       {isFullscreen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 sm:p-6 backdrop-blur-md animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 sm:p-6 backdrop-blur-md animate-in fade-in duration-200"
           onClick={() => setIsFullscreen(false)}
         >
           <div
-            className="relative flex h-[90vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl border border-neutral-800 bg-[#0d1117] text-neutral-100 shadow-2xl ring-1 ring-white/10"
+            style={{
+              backgroundColor: preset.colors.background,
+              color: preset.colors.foreground,
+              borderColor: preset.colors.border,
+            }}
+            className="relative flex h-[90vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl border shadow-2xl transition-all"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Modal Top Bar */}
-            <div className="flex h-14 items-center justify-between border-b border-neutral-800 bg-[#161b22]/90 px-5 backdrop-blur-md select-none">
-              {/* Diagram Title & Badges */}
-              <div className="flex items-center gap-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400 ring-1 ring-blue-500/20">
-                  <GitBranch className="h-4 w-4" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold tracking-tight text-white">
-                      Diagram Inspector
-                    </span>
-                    <span className="rounded-full bg-blue-500/15 px-2 py-0.5 text-[10px] font-semibold text-blue-400 ring-1 ring-blue-500/30">
-                      {diagramType}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Center: Zoom Controls Bar */}
-              <div className="flex items-center rounded-lg border border-neutral-750 bg-neutral-900/80 p-1 shadow-inner">
-                <button
-                  onClick={() => setZoom((z) => Math.max(0.4, z - 0.15))}
-                  title="Zoom Out (-)"
-                  className="flex h-7 w-7 items-center justify-center rounded-md text-neutral-400 hover:bg-neutral-800 hover:text-white transition-colors"
-                >
-                  <ZoomOut className="h-3.5 w-3.5" />
-                </button>
-                <button
-                  onClick={resetTransform}
-                  title="Reset Zoom (0)"
-                  className="px-2.5 text-xs font-mono font-medium text-neutral-300 hover:text-white transition-colors"
-                >
-                  {Math.round(zoom * 100)}%
-                </button>
-                <button
-                  onClick={() => setZoom((z) => Math.min(2.5, z + 0.15))}
-                  title="Zoom In (+)"
-                  className="flex h-7 w-7 items-center justify-center rounded-md text-neutral-400 hover:bg-neutral-800 hover:text-white transition-colors"
-                >
-                  <ZoomIn className="h-3.5 w-3.5" />
-                </button>
-                <div className="mx-1 h-3.5 w-[1px] bg-neutral-750" />
-                <button
-                  onClick={resetTransform}
-                  title="Reset Canvas Position"
-                  className="flex h-7 w-7 items-center justify-center rounded-md text-neutral-400 hover:bg-neutral-800 hover:text-white transition-colors"
-                >
-                  <RotateCcw className="h-3 w-3" />
-                </button>
-              </div>
-
-              {/* Right: Export Actions & Close */}
+            {/* Modal Top Header Bar */}
+            <div
+              style={{
+                backgroundColor: preset.colors.muted || (preset.isDark ? "#161b22" : "#f1f5f9"),
+                borderColor: preset.colors.border,
+              }}
+              className="flex h-13 items-center justify-between border-b px-4 select-none shrink-0"
+            >
+              {/* Left: Diagram Type Badge */}
               <div className="flex items-center gap-2">
-                <button
-                  onClick={handleCopySvg}
-                  className="flex items-center gap-1.5 rounded-lg border border-neutral-700 bg-neutral-850 px-3 py-1.5 text-xs font-medium text-neutral-200 hover:bg-neutral-750 hover:text-white transition-all shadow-xs"
+                <GitBranch className="h-4 w-4 text-emerald-500 shrink-0" />
+                <span className="font-semibold text-xs tracking-wide uppercase opacity-90">
+                  {diagramType}
+                </span>
+              </div>
+
+              {/* Right: Grouped Action & Zoom Toolbars */}
+              <div className="flex items-center gap-2.5">
+                {/* Zoom Controls */}
+                <div
+                  style={{
+                    backgroundColor: preset.isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.05)",
+                    borderColor: preset.colors.border,
+                    color: preset.colors.foreground,
+                  }}
+                  className="flex items-center rounded-lg border p-0.5 text-xs font-mono backdrop-blur-xs"
                 >
-                  {copied ? (
-                    <>
-                      <Check className="h-3.5 w-3.5 text-emerald-400" />
-                      <span className="text-emerald-400">Copied</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="h-3.5 w-3.5 text-neutral-400" />
-                      <span>Copy SVG</span>
-                    </>
-                  )}
-                </button>
+                  <button
+                    onClick={() => setZoom((z) => Math.max(0.4, z - 0.15))}
+                    title="Zoom Out (-)"
+                    className="flex h-7 w-7 items-center justify-center rounded transition-all hover:bg-black/10 dark:hover:bg-white/15"
+                  >
+                    <ZoomOut className="h-3.5 w-3.5 opacity-80" />
+                  </button>
+                  <span className="px-2 font-mono text-[11px] font-medium min-w-[3rem] text-center opacity-90">
+                    {Math.round(zoom * 100)}%
+                  </span>
+                  <button
+                    onClick={() => setZoom((z) => Math.min(2.5, z + 0.15))}
+                    title="Zoom In (+)"
+                    className="flex h-7 w-7 items-center justify-center rounded transition-all hover:bg-black/10 dark:hover:bg-white/15"
+                  >
+                    <ZoomIn className="h-3.5 w-3.5 opacity-80" />
+                  </button>
+                  <div
+                    style={{ backgroundColor: preset.colors.border }}
+                    className="mx-1 h-3.5 w-[1px] opacity-75"
+                  />
+                  <button
+                    onClick={resetTransform}
+                    title="Reset Zoom (0)"
+                    className="flex h-7 w-7 items-center justify-center rounded transition-all hover:bg-black/10 dark:hover:bg-white/15"
+                  >
+                    <RotateCcw className="h-3 w-3 opacity-80" />
+                  </button>
+                </div>
 
-                <button
-                  onClick={handleDownloadSvg}
-                  title="Download vector SVG"
-                  className="flex items-center gap-1.5 rounded-lg border border-neutral-700 bg-neutral-850 px-3 py-1.5 text-xs font-medium text-neutral-200 hover:bg-neutral-750 hover:text-white transition-all shadow-xs"
+                {/* Export Buttons */}
+                <div
+                  style={{
+                    backgroundColor: preset.isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.05)",
+                    borderColor: preset.colors.border,
+                    color: preset.colors.foreground,
+                  }}
+                  className="flex items-center gap-0.5 rounded-lg border p-0.5 text-xs font-medium backdrop-blur-xs"
                 >
-                  <Download className="h-3.5 w-3.5 text-neutral-400" />
-                  <span>SVG</span>
-                </button>
+                  <button
+                    onClick={handleCopySvg}
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded transition-all hover:bg-black/10 dark:hover:bg-white/15"
+                    title="Copy SVG to clipboard"
+                  >
+                    {copied ? (
+                      <>
+                        <Check className="h-3.5 w-3.5 text-emerald-500" />
+                        <span className="text-emerald-500 font-semibold">Copied</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-3.5 w-3.5 opacity-80" />
+                        <span>Copy SVG</span>
+                      </>
+                    )}
+                  </button>
+                  <button
+                    onClick={handleDownloadSvg}
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded transition-all hover:bg-black/10 dark:hover:bg-white/15"
+                    title="Download vector SVG"
+                  >
+                    <Download className="h-3.5 w-3.5 opacity-80" />
+                    <span>SVG</span>
+                  </button>
+                  <button
+                    onClick={handleDownloadPng}
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded transition-all hover:bg-black/10 dark:hover:bg-white/15"
+                    title="Download 2x PNG image"
+                  >
+                    <FileImage className="h-3.5 w-3.5 opacity-80" />
+                    <span>PNG</span>
+                  </button>
+                </div>
 
-                <button
-                  onClick={handleDownloadPng}
-                  title="Download 2x PNG image"
-                  className="flex items-center gap-1.5 rounded-lg border border-neutral-700 bg-neutral-850 px-3 py-1.5 text-xs font-medium text-neutral-200 hover:bg-neutral-750 hover:text-white transition-all shadow-xs"
-                >
-                  <FileImage className="h-3.5 w-3.5 text-neutral-400" />
-                  <span>PNG</span>
-                </button>
-
-                <div className="mx-1 h-4 w-[1px] bg-neutral-800" />
-
+                {/* Close Button */}
                 <button
                   onClick={() => setIsFullscreen(false)}
-                  title="Close (Esc)"
-                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-neutral-700 bg-neutral-800 text-neutral-400 hover:bg-neutral-700 hover:text-white transition-colors"
+                  title="Close (ESC)"
+                  style={{
+                    backgroundColor: preset.isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.05)",
+                    borderColor: preset.colors.border,
+                    color: preset.colors.foreground,
+                  }}
+                  className="flex h-8 w-8 items-center justify-center rounded-lg border transition-all hover:bg-red-500/15 hover:text-red-500 hover:border-red-500/30 ml-1"
                 >
-                  <X className="h-4 w-4" />
+                  <X className="h-4 w-4 opacity-80 hover:opacity-100" />
                 </button>
               </div>
             </div>
@@ -405,49 +426,26 @@ export function MermaidBlock({ chart, preset }: MermaidBlockProps) {
               onMouseLeave={handleMouseUp}
               onWheel={handleWheel}
               style={{
-                backgroundColor: preset.isDark ? "#090d16" : "#f8fafc",
+                backgroundColor: preset.colors.background,
                 backgroundImage: preset.isDark
                   ? "radial-gradient(circle, rgba(255, 255, 255, 0.08) 1px, transparent 1px)"
-                  : "radial-gradient(circle, rgba(0, 0, 0, 0.08) 1px, transparent 1px)",
+                  : "radial-gradient(circle, rgba(0, 0, 0, 0.06) 1px, transparent 1px)",
                 backgroundSize: "20px 20px",
               }}
               className={`relative flex-1 overflow-hidden flex items-center justify-center select-none ${
                 isDragging ? "cursor-grabbing" : "cursor-grab"
               }`}
             >
-              {/* Transformed Diagram SVG Wrapper with Responsive Hero Sizing */}
+              {/* SVG Wrapper - Seamlessly merged into the canvas */}
               <div
                 style={{
                   transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
                   transformOrigin: "center center",
                   transition: isDragging ? "none" : "transform 0.15s ease-out",
                 }}
-                className="flex items-center justify-center p-8 pointer-events-auto [&>svg]:!max-w-none [&>svg]:!w-auto [&>svg]:min-w-[620px] md:[&>svg]:min-w-[780px] lg:[&>svg]:min-w-[880px] [&>svg]:max-w-[85vw] [&>svg]:max-h-[68vh] [&>svg]:h-auto [&>svg]:shadow-sm rounded-lg"
+                className="flex items-center justify-center p-8 pointer-events-auto [&>svg]:!max-w-none [&>svg]:!w-auto [&>svg]:min-w-[620px] md:[&>svg]:min-w-[780px] lg:[&>svg]:min-w-[880px] [&>svg]:max-w-[85vw] [&>svg]:max-h-[78vh] [&>svg]:h-auto"
                 dangerouslySetInnerHTML={{ __html: svg }}
               />
-            </div>
-
-            {/* Modal Bottom Footer Bar */}
-            <div className="flex h-10 items-center justify-between border-t border-neutral-800 bg-[#161b22] px-5 text-[11px] text-neutral-400 select-none">
-              <div className="flex items-center gap-2">
-                <span className="font-medium text-neutral-300">Theme:</span>
-                <span className="font-semibold text-white">{preset.name}</span>
-                <div
-                  className="h-2.5 w-2.5 rounded-full ring-1 ring-white/20"
-                  style={{ backgroundColor: preset.mermaid.primaryColor }}
-                />
-              </div>
-
-              <div className="flex items-center gap-3 text-neutral-500 font-mono text-[10px]">
-                <span>Scroll to zoom</span>
-                <span>•</span>
-                <span>Drag canvas to pan</span>
-                <span>•</span>
-                <kbd className="rounded border border-neutral-700 bg-neutral-800 px-1.5 py-0.5 text-neutral-300">
-                  ESC
-                </kbd>
-                <span>to exit</span>
-              </div>
             </div>
           </div>
         </div>

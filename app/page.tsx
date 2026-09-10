@@ -47,9 +47,10 @@ import { StatsBadge } from "@/components/studio/stats-badge";
 import { Toaster, toast } from "sonner";
 import { AppLockProvider, useAppLock } from "@/components/security/app-lock-context";
 import { LockScreen } from "@/components/security/lock-screen";
+import { getSyntaxThemeForPreset } from "@/lib/microlighter/microlighter-service";
 
 function StudioContent() {
-  const { isLocked, unlockedDocuments, updateUnlockedDocuments } = useAppLock();
+  const { isLocked, unlockedDocuments, sessionPasscode } = useAppLock();
 
   const [documents, setDocuments] = useState<MarkdownDocument[]>([]);
   const [activeDocId, setActiveDocId] = useState<string>("");
@@ -87,22 +88,36 @@ function StudioContent() {
     setIsHydrated(true);
   }, []);
 
-  // Sync decrypted documents when unlocked
+  const hasSyncedUnlockedRef = useRef(false);
+
+  // Sync decrypted documents when unlocked (only once per unlock session)
   useEffect(() => {
-    if (unlockedDocuments && unlockedDocuments.length > 0) {
+    if (unlockedDocuments && unlockedDocuments.length > 0 && !hasSyncedUnlockedRef.current) {
       setDocuments(unlockedDocuments);
       if (!activeDocId || !unlockedDocuments.find((d) => d.id === activeDocId)) {
         setActiveDocId(unlockedDocuments[0].id);
       }
+      hasSyncedUnlockedRef.current = true;
     }
-  }, [unlockedDocuments]);
+  }, [unlockedDocuments, activeDocId]);
 
-  // Save documents on change
+  // Reset sync ref when app gets locked
+  useEffect(() => {
+    if (isLocked) {
+      hasSyncedUnlockedRef.current = false;
+    }
+  }, [isLocked]);
+
+  // Save documents on change without triggering AppLockContext re-renders
   useEffect(() => {
     if (isHydrated && documents.length > 0) {
-      updateUnlockedDocuments(documents);
+      if (sessionPasscode) {
+        saveStoredDocuments(documents, sessionPasscode);
+      } else {
+        saveStoredDocuments(documents);
+      }
     }
-  }, [documents, isHydrated]);
+  }, [documents, isHydrated, sessionPasscode]);
 
   // Save active document ID on change
   useEffect(() => {
@@ -171,6 +186,18 @@ function StudioContent() {
   const activePreset = useMemo(() => {
     return getPresetById(currentDoc.presetId, currentDoc.customPreset || customPreset || undefined);
   }, [currentDoc.presetId, currentDoc.customPreset, customPreset]);
+
+  // Sync syntax theme to document body for MicroLighter CSS Custom Highlight API
+  const syntaxTheme = useMemo(
+    () => getSyntaxThemeForPreset(activePreset.id, activePreset.isDark),
+    [activePreset.id, activePreset.isDark]
+  );
+
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      document.body.dataset.syntaxTheme = syntaxTheme;
+    }
+  }, [syntaxTheme]);
 
   // Document stats and TOC
   const stats = useMemo(() => {
@@ -414,8 +441,35 @@ function StudioContent() {
     const textarea = editorRef.current;
     if (!textarea) return;
 
-    const { selectionStart, selectionEnd, value } = textarea;
-    const selected = value.substring(selectionStart, selectionEnd) || defaultText;
+    // Read saved position BEFORE any DOM focus call
+    let selectionStart = 0;
+    let selectionEnd = 0;
+
+    const datasetStart = textarea.dataset.selectionStart;
+    const datasetEnd = textarea.dataset.selectionEnd;
+
+    if (datasetStart !== undefined && datasetStart !== "") {
+      selectionStart = parseInt(datasetStart, 10);
+      selectionEnd = datasetEnd !== undefined && datasetEnd !== "" ? parseInt(datasetEnd, 10) : selectionStart;
+    } else {
+      selectionStart = textarea.selectionStart ?? 0;
+      selectionEnd = textarea.selectionEnd ?? 0;
+    }
+
+    if (isNaN(selectionStart)) selectionStart = 0;
+    if (isNaN(selectionEnd)) selectionEnd = selectionStart;
+
+    const value = textarea.value || "";
+
+    // Clamp selection range within bounds
+    selectionStart = Math.min(value.length, Math.max(0, selectionStart));
+    selectionEnd = Math.min(value.length, Math.max(selectionStart, selectionEnd));
+
+    const hasSelection = selectionStart !== selectionEnd;
+    const selected = hasSelection
+      ? value.substring(selectionStart, selectionEnd)
+      : defaultText;
+
     const newValue =
       value.substring(0, selectionStart) +
       before +
@@ -423,12 +477,21 @@ function StudioContent() {
       after +
       value.substring(selectionEnd);
 
+    const newCursorStart = selectionStart + before.length;
+    const newCursorEnd = newCursorStart + selected.length;
+
+    // Save updated positions to dataset
+    textarea.dataset.selectionStart = String(newCursorStart);
+    textarea.dataset.selectionEnd = String(newCursorEnd);
+
     updateContent(newValue);
-    setTimeout(() => {
+
+    // Re-focus and set selection range
+    requestAnimationFrame(() => {
+      textarea.setSelectionRange(newCursorStart, newCursorEnd);
       textarea.focus();
-      textarea.selectionStart = selectionStart + before.length;
-      textarea.selectionEnd = selectionStart + before.length + selected.length;
-    }, 0);
+      textarea.setSelectionRange(newCursorStart, newCursorEnd);
+    });
   };
 
   // Export Actions
@@ -546,6 +609,7 @@ function StudioContent() {
                   lineNumbers={settings.lineNumbers}
                   wordWrap={settings.wordWrap}
                   fontSize={settings.fontSize}
+                  syntaxTheme={getSyntaxThemeForPreset(activePreset.id, activePreset.isDark)}
                 />
               </div>
               {/* Bottom Editor Status Bar (Desktop only) */}

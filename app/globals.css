@@ -191,8 +191,17 @@
 
 .markdown-document ul,
 .markdown-document ol {
-  margin: 0 0 var(--md-spacing-paragraph, 1.25rem) 0;
+  margin-top: 0;
+  margin-bottom: var(--md-spacing-paragraph, 1.25rem);
   padding-left: 1.5rem;
+}
+
+.markdown-document ul {
+  list-style-type: disc;
+}
+
+.markdown-document ol {
+  list-style-type: decimal;
 }
 
 .markdown-document li {

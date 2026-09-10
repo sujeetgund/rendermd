@@ -131,6 +131,8 @@ export function MarkdownPreview({
                   code={rawCode}
                   language={language}
                   showLineNumbers={showLineNumbers}
+                  presetId={preset.id}
+                  isDark={preset.isDark}
                 />
               );
             }
