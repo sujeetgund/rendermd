@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import {
   MarkdownDocument,
   ViewMode,
@@ -32,11 +33,17 @@ import {
   Check,
   PanelLeft,
   Link2,
+  ShieldLock,
+  ShieldCheck,
+  Shield,
+  X,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import confetti from "canvas-confetti";
 import { generateShareUrl } from "@/lib/storage/share";
+import { useAppLock } from "@/components/security/app-lock-context";
+import { SecuritySettings } from "@/components/security/security-settings";
 
 interface TopNavProps {
   document: MarkdownDocument;
@@ -83,8 +90,11 @@ export function TopNav({
   const [titleValue, setTitleValue] = useState(currentDoc.title);
   const [showExportMenu, setShowExportMenu] = useState(false);
   const [showSettingsMenu, setShowSettingsMenu] = useState(false);
+  const [showSecurityModal, setShowSecurityModal] = useState(false);
   const exportRef = useRef<HTMLDivElement>(null);
   const settingsRef = useRef<HTMLDivElement>(null);
+
+  const { isConfigured, lockApp } = useAppLock();
 
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -420,9 +430,46 @@ export function TopNav({
                   className="w-full accent-emerald-500 cursor-pointer"
                 />
               </div>
+
+              <div className="pt-2 border-t border-neutral-200 dark:border-neutral-800">
+                <button
+                  onClick={() => {
+                    setShowSettingsMenu(false);
+                    setShowSecurityModal(true);
+                  }}
+                  className="w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-xs font-medium text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="h-4 w-4 text-emerald-500" />
+                    <span>Security & App Lock</span>
+                  </div>
+                  <span className="text-[10px] text-emerald-500 font-semibold uppercase">
+                    {isConfigured ? "Active" : "Off"}
+                  </span>
+                </button>
+              </div>
             </div>
           )}
         </div>
+
+        {/* Lock App Quick Button (Desktop & Mobile) */}
+        <button
+          onClick={() => {
+            if (isConfigured) {
+              lockApp();
+            } else {
+              setShowSecurityModal(true);
+            }
+          }}
+          title={isConfigured ? "Lock App Immediately" : "Setup App Lock Protection"}
+          className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
+            isConfigured
+              ? "text-emerald-500 hover:bg-emerald-500/10 dark:hover:bg-emerald-500/20"
+              : "text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/80"
+          }`}
+        >
+          <ShieldLock className="h-3.5 w-3.5" />
+        </button>
 
         {/* Share Link Button (Desktop) */}
         <button
@@ -521,6 +568,26 @@ export function TopNav({
           )}
         </div>
       </div>
+
+      {/* Security Settings Modal */}
+      {showSecurityModal && mounted && createPortal(
+        <div className="fixed inset-0 z-[100] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-lg max-h-[90vh] overflow-y-auto w-full text-slate-100 shadow-2xl relative my-auto">
+            <button
+              onClick={() => setShowSecurityModal(false)}
+              className="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+              <ShieldCheck className="w-6 h-6 text-emerald-400" />
+              Security & Protection Settings
+            </h3>
+            <SecuritySettings />
+          </div>
+        </div>,
+        document.body
+      )}
     </header>
   );
 }

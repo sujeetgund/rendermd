@@ -19,6 +19,18 @@ const DEFAULT_SETTINGS: StudioSettings = {
   appTheme: "dark",
 };
 
+export function isDocumentsPayloadEncrypted(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.DOCUMENTS);
+    if (!raw) return false;
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === "object" && parsed.encrypted === true;
+  } catch {
+    return false;
+  }
+}
+
 export function loadStoredDocuments(): MarkdownDocument[] {
   if (typeof window === "undefined") return INITIAL_DOCUMENTS;
   try {
@@ -28,16 +40,52 @@ export function loadStoredDocuments(): MarkdownDocument[] {
       return INITIAL_DOCUMENTS;
     }
     const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === "object" && parsed.encrypted === true) {
+      // Encrypted at rest, caller must use decryptStoredDocuments
+      return INITIAL_DOCUMENTS;
+    }
     return Array.isArray(parsed) && parsed.length > 0 ? parsed : INITIAL_DOCUMENTS;
   } catch {
     return INITIAL_DOCUMENTS;
   }
 }
 
-export function saveStoredDocuments(docs: MarkdownDocument[]): void {
+export async function decryptStoredDocuments(passcode: string): Promise<MarkdownDocument[]> {
+  if (typeof window === "undefined") return INITIAL_DOCUMENTS;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.DOCUMENTS);
+    if (!raw) return INITIAL_DOCUMENTS;
+    const parsed = JSON.parse(raw);
+
+    if (parsed && typeof parsed === "object" && parsed.encrypted === true) {
+      const { decryptData } = await import("@/lib/security/app-lock");
+      const decryptedJson = await decryptData(parsed.payload, passcode);
+      const docs = JSON.parse(decryptedJson);
+      return Array.isArray(docs) ? docs : INITIAL_DOCUMENTS;
+    }
+
+    return Array.isArray(parsed) ? parsed : INITIAL_DOCUMENTS;
+  } catch (err) {
+    console.error("Failed to decrypt stored documents:", err);
+    throw err;
+  }
+}
+
+export async function saveStoredDocuments(docs: MarkdownDocument[], passcode?: string): Promise<void> {
   if (typeof window === "undefined") return;
   try {
-    localStorage.setItem(STORAGE_KEYS.DOCUMENTS, JSON.stringify(docs));
+    if (passcode) {
+      const { encryptData } = await import("@/lib/security/app-lock");
+      const jsonText = JSON.stringify(docs);
+      const encryptedPayload = await encryptData(jsonText, passcode);
+      const wrapper = {
+        encrypted: true,
+        payload: encryptedPayload,
+      };
+      localStorage.setItem(STORAGE_KEYS.DOCUMENTS, JSON.stringify(wrapper));
+    } else {
+      localStorage.setItem(STORAGE_KEYS.DOCUMENTS, JSON.stringify(docs));
+    }
   } catch (err) {
     console.error("Failed to save documents to localStorage:", err);
   }

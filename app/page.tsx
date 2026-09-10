@@ -45,8 +45,12 @@ import { DocumentDrawer } from "@/components/studio/document-drawer";
 import { CustomThemeModal } from "@/components/presets/custom-theme-modal";
 import { StatsBadge } from "@/components/studio/stats-badge";
 import { Toaster, toast } from "sonner";
+import { AppLockProvider, useAppLock } from "@/components/security/app-lock-context";
+import { LockScreen } from "@/components/security/lock-screen";
 
-export default function RendermdStudio() {
+function StudioContent() {
+  const { isLocked, unlockedDocuments, updateUnlockedDocuments } = useAppLock();
+
   const [documents, setDocuments] = useState<MarkdownDocument[]>([]);
   const [activeDocId, setActiveDocId] = useState<string>("");
   const [viewMode, setViewMode] = useState<ViewMode>("split");
@@ -83,10 +87,20 @@ export default function RendermdStudio() {
     setIsHydrated(true);
   }, []);
 
+  // Sync decrypted documents when unlocked
+  useEffect(() => {
+    if (unlockedDocuments && unlockedDocuments.length > 0) {
+      setDocuments(unlockedDocuments);
+      if (!activeDocId || !unlockedDocuments.find((d) => d.id === activeDocId)) {
+        setActiveDocId(unlockedDocuments[0].id);
+      }
+    }
+  }, [unlockedDocuments]);
+
   // Save documents on change
   useEffect(() => {
     if (isHydrated && documents.length > 0) {
-      saveStoredDocuments(documents);
+      updateUnlockedDocuments(documents);
     }
   }, [documents, isHydrated]);
 
@@ -601,6 +615,17 @@ export default function RendermdStudio() {
         onExportPdf={handleExportPdf}
         onExportImage={handleExportImage}
       />
+
+      {/* Lock Screen Overlay when app is locked */}
+      {isLocked && <LockScreen />}
     </div>
+  );
+}
+
+export default function RendermdStudio() {
+  return (
+    <AppLockProvider>
+      <StudioContent />
+    </AppLockProvider>
   );
 }
