@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import {
   MarkdownDocument,
   ViewMode,
@@ -26,7 +32,10 @@ import {
   slugify,
 } from "@/lib/markdown/toc";
 import { extractFrontmatter } from "@/lib/markdown/frontmatter";
-import { generateStandaloneHtml, downloadHtmlFile } from "@/lib/export/html-exporter";
+import {
+  generateStandaloneHtml,
+  downloadHtmlFile,
+} from "@/lib/export/html-exporter";
 import { exportToPdfPrint } from "@/lib/export/pdf-exporter";
 import { exportElementAsImage } from "@/lib/export/image-exporter";
 import {
@@ -37,6 +46,7 @@ import {
 import { TopNav } from "@/components/studio/top-nav";
 import { SplitPane } from "@/components/studio/split-pane";
 import { AppleDock } from "@/components/studio/apple-dock";
+import { LoadingScreen } from "@/components/studio/loading-screen";
 import { MarkdownEditor } from "@/components/editor/markdown-editor";
 import { MarkdownPreview } from "@/components/preview/markdown-preview";
 import { TocDrawer } from "@/components/studio/toc-drawer";
@@ -44,7 +54,10 @@ import { DocumentDrawer } from "@/components/studio/document-drawer";
 import { CustomThemeModal } from "@/components/presets/custom-theme-modal";
 import { StatsBadge } from "@/components/studio/stats-badge";
 import { Toaster, toast } from "sonner";
-import { AppLockProvider, useAppLock } from "@/components/security/app-lock-context";
+import {
+  AppLockProvider,
+  useAppLock,
+} from "@/components/security/app-lock-context";
 import { LockScreen } from "@/components/security/lock-screen";
 import { getSyntaxThemeForPreset } from "@/lib/microlighter/microlighter-service";
 
@@ -91,9 +104,16 @@ function StudioContent() {
 
   // Sync decrypted documents when unlocked (only once per unlock session)
   useEffect(() => {
-    if (unlockedDocuments && unlockedDocuments.length > 0 && !hasSyncedUnlockedRef.current) {
+    if (
+      unlockedDocuments &&
+      unlockedDocuments.length > 0 &&
+      !hasSyncedUnlockedRef.current
+    ) {
       setDocuments(unlockedDocuments);
-      if (!activeDocId || !unlockedDocuments.find((d) => d.id === activeDocId)) {
+      if (
+        !activeDocId ||
+        !unlockedDocuments.find((d) => d.id === activeDocId)
+      ) {
         setActiveDocId(unlockedDocuments[0].id);
       }
       hasSyncedUnlockedRef.current = true;
@@ -135,7 +155,10 @@ function StudioContent() {
   // Handle incoming shared URL hash links (#doc=...)
   useEffect(() => {
     if (!isHydrated) return;
-    if (typeof window !== "undefined" && window.location.hash.includes("#doc=")) {
+    if (
+      typeof window !== "undefined" &&
+      window.location.hash.includes("#doc=")
+    ) {
       const payload = parseShareUrlHash(window.location.hash);
       if (payload && payload.c) {
         const sharedTitle = payload.t || "Shared Document";
@@ -156,7 +179,7 @@ function StudioContent() {
         window.history.replaceState(
           null,
           "",
-          window.location.pathname + window.location.search
+          window.location.pathname + window.location.search,
         );
 
         toast.success(`Loaded shared document: "${sharedTitle}"`, {
@@ -183,13 +206,16 @@ function StudioContent() {
 
   // Active preset object
   const activePreset = useMemo(() => {
-    return getPresetById(currentDoc.presetId, currentDoc.customPreset || customPreset || undefined);
+    return getPresetById(
+      currentDoc.presetId,
+      currentDoc.customPreset || customPreset || undefined,
+    );
   }, [currentDoc.presetId, currentDoc.customPreset, customPreset]);
 
   // Sync syntax theme to document body for MicroLighter CSS Custom Highlight API
   const syntaxTheme = useMemo(
     () => getSyntaxThemeForPreset(activePreset.id, activePreset.isDark),
-    [activePreset.id, activePreset.isDark]
+    [activePreset.id, activePreset.isDark],
   );
 
   useEffect(() => {
@@ -221,11 +247,11 @@ function StudioContent() {
         prev.map((doc) =>
           doc.id === activeDocId
             ? { ...doc, content: newContent, updatedAt: Date.now() }
-            : doc
-        )
+            : doc,
+        ),
       );
     },
-    [activeDocId]
+    [activeDocId],
   );
 
   const updateTitle = useCallback(
@@ -234,24 +260,24 @@ function StudioContent() {
         prev.map((doc) =>
           doc.id === activeDocId
             ? { ...doc, title: newTitle, updatedAt: Date.now() }
-            : doc
-        )
+            : doc,
+        ),
       );
       toast.success("Document renamed");
     },
-    [activeDocId]
+    [activeDocId],
   );
 
   const selectPreset = useCallback(
     (presetId: PresetId) => {
       setDocuments((prev) =>
         prev.map((doc) =>
-          doc.id === activeDocId ? { ...doc, presetId } : doc
-        )
+          doc.id === activeDocId ? { ...doc, presetId } : doc,
+        ),
       );
       toast.success(`Preset switched to ${presetId.toUpperCase()}`);
     },
-    [activeDocId]
+    [activeDocId],
   );
 
   const handleSaveCustomPreset = useCallback(
@@ -262,11 +288,11 @@ function StudioContent() {
         prev.map((doc) =>
           doc.id === activeDocId
             ? { ...doc, presetId: "custom", customPreset: newPreset }
-            : doc
-        )
+            : doc,
+        ),
       );
     },
-    [activeDocId]
+    [activeDocId],
   );
 
   const createDocument = useCallback(
@@ -283,7 +309,7 @@ function StudioContent() {
       setActiveDocId(newDoc.id);
       toast.success(`Created "${title}"`);
     },
-    []
+    [],
   );
 
   const deleteDocument = useCallback(
@@ -297,30 +323,27 @@ function StudioContent() {
       });
       toast.success("Document deleted");
     },
-    [activeDocId]
+    [activeDocId],
   );
 
-  const duplicateDocument = useCallback(
-    (doc: MarkdownDocument) => {
-      const duplicated: MarkdownDocument = {
-        ...doc,
-        id: `doc-${Date.now()}`,
-        title: `${doc.title} (Copy)`,
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-      };
-      setDocuments((prev) => [duplicated, ...prev]);
-      setActiveDocId(duplicated.id);
-      toast.success(`Duplicated "${doc.title}"`);
-    },
-    []
-  );
+  const duplicateDocument = useCallback((doc: MarkdownDocument) => {
+    const duplicated: MarkdownDocument = {
+      ...doc,
+      id: `doc-${Date.now()}`,
+      title: `${doc.title} (Copy)`,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    };
+    setDocuments((prev) => [duplicated, ...prev]);
+    setActiveDocId(duplicated.id);
+    toast.success(`Duplicated "${doc.title}"`);
+  }, []);
 
   // Heading-Sectional Synchronized Scrolling Logic
   function getSectionAnchors(
     markdown: string,
     textarea: HTMLTextAreaElement,
-    preview: HTMLDivElement
+    preview: HTMLDivElement,
   ) {
     const lines = markdown.split("\n");
     const totalLines = lines.length || 1;
@@ -360,7 +383,10 @@ function StudioContent() {
       }
     }
 
-    const maxEditor = Math.max(0, textarea.scrollHeight - textarea.clientHeight);
+    const maxEditor = Math.max(
+      0,
+      textarea.scrollHeight - textarea.clientHeight,
+    );
     const maxPreview = Math.max(0, preview.scrollHeight - preview.clientHeight);
     anchors.push({ yEditor: maxEditor, yPreview: maxPreview });
 
@@ -391,7 +417,8 @@ function StudioContent() {
     const a2 = anchors[i + 1] || a1;
 
     const editorRange = a2.yEditor - a1.yEditor;
-    const progress = editorRange > 0 ? (currentY - a1.yEditor) / editorRange : 0;
+    const progress =
+      editorRange > 0 ? (currentY - a1.yEditor) / editorRange : 0;
     preview.scrollTop = a1.yPreview + progress * (a2.yPreview - a1.yPreview);
 
     setTimeout(() => {
@@ -423,7 +450,8 @@ function StudioContent() {
     const a2 = anchors[i + 1] || a1;
 
     const previewRange = a2.yPreview - a1.yPreview;
-    const progress = previewRange > 0 ? (currentY - a1.yPreview) / previewRange : 0;
+    const progress =
+      previewRange > 0 ? (currentY - a1.yPreview) / previewRange : 0;
     textarea.scrollTop = a1.yEditor + progress * (a2.yEditor - a1.yEditor);
 
     setTimeout(() => {
@@ -435,7 +463,7 @@ function StudioContent() {
   const handleToolbarInsert = (
     before: string,
     after = "",
-    defaultText = "text"
+    defaultText = "text",
   ) => {
     const textarea = editorRef.current;
     if (!textarea) return;
@@ -449,7 +477,10 @@ function StudioContent() {
 
     if (datasetStart !== undefined && datasetStart !== "") {
       selectionStart = parseInt(datasetStart, 10);
-      selectionEnd = datasetEnd !== undefined && datasetEnd !== "" ? parseInt(datasetEnd, 10) : selectionStart;
+      selectionEnd =
+        datasetEnd !== undefined && datasetEnd !== ""
+          ? parseInt(datasetEnd, 10)
+          : selectionStart;
     } else {
       selectionStart = textarea.selectionStart ?? 0;
       selectionEnd = textarea.selectionEnd ?? 0;
@@ -462,7 +493,10 @@ function StudioContent() {
 
     // Clamp selection range within bounds
     selectionStart = Math.min(value.length, Math.max(0, selectionStart));
-    selectionEnd = Math.min(value.length, Math.max(selectionStart, selectionEnd));
+    selectionEnd = Math.min(
+      value.length,
+      Math.max(selectionStart, selectionEnd),
+    );
 
     const bLen = before.length;
     const aLen = after.length;
@@ -587,14 +621,7 @@ function StudioContent() {
   };
 
   if (!isHydrated) {
-    return (
-      <div className="flex h-screen w-screen items-center justify-center bg-[#090d16] text-white">
-        <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
-          <span className="font-mono text-xs opacity-70">Loading rendermd...</span>
-        </div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   return (
@@ -640,7 +667,10 @@ function StudioContent() {
                   lineNumbers={settings.lineNumbers}
                   wordWrap={settings.wordWrap}
                   fontSize={settings.fontSize}
-                  syntaxTheme={getSyntaxThemeForPreset(activePreset.id, activePreset.isDark)}
+                  syntaxTheme={getSyntaxThemeForPreset(
+                    activePreset.id,
+                    activePreset.isDark,
+                  )}
                 />
               </div>
               {/* Bottom Editor Status Bar (Desktop only) */}
