@@ -38,7 +38,6 @@ import { TopNav } from "@/components/studio/top-nav";
 import { SplitPane } from "@/components/studio/split-pane";
 import { AppleDock } from "@/components/studio/apple-dock";
 import { MarkdownEditor } from "@/components/editor/markdown-editor";
-import { FormatToolbar } from "@/components/editor/format-toolbar";
 import { MarkdownPreview } from "@/components/preview/markdown-preview";
 import { TocDrawer } from "@/components/studio/toc-drawer";
 import { DocumentDrawer } from "@/components/studio/document-drawer";
@@ -465,20 +464,53 @@ function StudioContent() {
     selectionStart = Math.min(value.length, Math.max(0, selectionStart));
     selectionEnd = Math.min(value.length, Math.max(selectionStart, selectionEnd));
 
+    const bLen = before.length;
+    const aLen = after.length;
     const hasSelection = selectionStart !== selectionEnd;
-    const selected = hasSelection
-      ? value.substring(selectionStart, selectionEnd)
-      : defaultText;
+    const selected = value.substring(selectionStart, selectionEnd);
 
-    const newValue =
-      value.substring(0, selectionStart) +
-      before +
-      selected +
-      after +
-      value.substring(selectionEnd);
+    const isSelfWrapped =
+      hasSelection &&
+      selected.length >= bLen + aLen &&
+      selected.startsWith(before) &&
+      selected.endsWith(after);
 
-    const newCursorStart = selectionStart + before.length;
-    const newCursorEnd = newCursorStart + selected.length;
+    const isSurroundWrapped =
+      selectionStart >= bLen &&
+      selectionEnd + aLen <= value.length &&
+      value.substring(selectionStart - bLen, selectionStart) === before &&
+      value.substring(selectionEnd, selectionEnd + aLen) === after;
+
+    let newValue = "";
+    let newCursorStart = selectionStart;
+    let newCursorEnd = selectionEnd;
+
+    if (isSelfWrapped) {
+      const unwrapped = selected.substring(bLen, selected.length - aLen);
+      newValue =
+        value.substring(0, selectionStart) +
+        unwrapped +
+        value.substring(selectionEnd);
+      newCursorStart = selectionStart;
+      newCursorEnd = selectionStart + unwrapped.length;
+    } else if (isSurroundWrapped) {
+      newValue =
+        value.substring(0, selectionStart - bLen) +
+        selected +
+        value.substring(selectionEnd + aLen);
+      newCursorStart = selectionStart - bLen;
+      newCursorEnd = newCursorStart + selected.length;
+    } else {
+      const textToUse = hasSelection ? selected : defaultText;
+      newValue =
+        value.substring(0, selectionStart) +
+        before +
+        textToUse +
+        after +
+        value.substring(selectionEnd);
+      newCursorStart = selectionStart + bLen;
+      newCursorEnd = newCursorStart + textToUse.length;
+    }
 
     // Save updated positions to dataset
     textarea.dataset.selectionStart = String(newCursorStart);
@@ -599,7 +631,6 @@ function StudioContent() {
           viewMode={viewMode}
           left={
             <div className="relative flex h-full w-full flex-col bg-white dark:bg-[#0c1017]">
-              <FormatToolbar onInsert={handleToolbarInsert} />
               <div className="flex-1 overflow-hidden">
                 <MarkdownEditor
                   value={currentDoc.content}

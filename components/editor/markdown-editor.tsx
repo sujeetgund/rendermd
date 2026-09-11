@@ -112,11 +112,93 @@ export function MarkdownEditor({
     });
   }, [slashQuery]);
 
+  // Wrap or unwrap selected text with markdown formatting syntax
+  const wrapSelection = useCallback(
+    (before: string, after: string, explicitStart?: number, explicitEnd?: number) => {
+      const textarea = textareaRef.current;
+      if (!textarea) return;
+
+      const value = textarea.value || "";
+
+      let selectionStart = explicitStart !== undefined ? explicitStart : textarea.selectionStart ?? 0;
+      let selectionEnd = explicitEnd !== undefined ? explicitEnd : textarea.selectionEnd ?? 0;
+
+      // Clamp selection coordinates to valid bounds
+      selectionStart = Math.min(value.length, Math.max(0, selectionStart));
+      selectionEnd = Math.min(value.length, Math.max(selectionStart, selectionEnd));
+
+      const bLen = before.length;
+      const aLen = after.length;
+      const selected = value.substring(selectionStart, selectionEnd);
+
+      let newValue = "";
+      let newStart = selectionStart;
+      let newEnd = selectionEnd;
+
+      const isSelfWrapped =
+        selected.length >= bLen + aLen &&
+        selected.startsWith(before) &&
+        selected.endsWith(after);
+
+      const isSurroundWrapped =
+        selectionStart >= bLen &&
+        selectionEnd + aLen <= value.length &&
+        value.substring(selectionStart - bLen, selectionStart) === before &&
+        value.substring(selectionEnd, selectionEnd + aLen) === after;
+
+      if (isSelfWrapped) {
+        // Unwrap self: e.g. **hello** -> hello
+        const unwrapped = selected.substring(bLen, selected.length - aLen);
+        newValue =
+          value.substring(0, selectionStart) +
+          unwrapped +
+          value.substring(selectionEnd);
+        newStart = selectionStart;
+        newEnd = selectionStart + unwrapped.length;
+      } else if (isSurroundWrapped) {
+        // Unwrap surrounding: e.g. **|hello|** -> hello
+        newValue =
+          value.substring(0, selectionStart - bLen) +
+          selected +
+          value.substring(selectionEnd + aLen);
+        newStart = selectionStart - bLen;
+        newEnd = newStart + selected.length;
+      } else {
+        // Wrap selection: e.g. hello -> **hello**
+        newValue =
+          value.substring(0, selectionStart) +
+          before +
+          selected +
+          after +
+          value.substring(selectionEnd);
+        newStart = selectionStart + bLen;
+        newEnd = newStart + selected.length;
+      }
+
+      onChange(newValue);
+
+      // Save updated selection position to dataset
+      textarea.dataset.selectionStart = String(newStart);
+      textarea.dataset.selectionEnd = String(newEnd);
+
+      const updateSelection = () => {
+        if (textareaRef.current) {
+          textareaRef.current.focus();
+          textareaRef.current.setSelectionRange(newStart, newEnd);
+          textareaRef.current.dataset.selectionStart = String(newStart);
+          textareaRef.current.dataset.selectionEnd = String(newEnd);
+        }
+      };
+
+      setTimeout(updateSelection, 0);
+      requestAnimationFrame(updateSelection);
+    },
+    [textareaRef, onChange]
+  );
+
   // Handle Keyboard Navigation & Hotkeys
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
+    const textarea = e.currentTarget;
     const { selectionStart, selectionEnd, value } = textarea;
 
     // Slash Menu Navigation when open
@@ -174,15 +256,16 @@ export function MarkdownEditor({
 
     // Hotkeys: Ctrl+B (Bold), Ctrl+I (Italic), Ctrl+K (Link)
     if (e.ctrlKey || e.metaKey) {
-      if (e.key.toLowerCase() === "b") {
+      const key = e.key.toLowerCase();
+      if (key === "b" || e.code === "KeyB") {
         e.preventDefault();
-        wrapSelection("**", "**");
-      } else if (e.key.toLowerCase() === "i") {
+        wrapSelection("**", "**", selectionStart, selectionEnd);
+      } else if (key === "i" || e.code === "KeyI") {
         e.preventDefault();
-        wrapSelection("*", "*");
-      } else if (e.key.toLowerCase() === "k") {
+        wrapSelection("*", "*", selectionStart, selectionEnd);
+      } else if (key === "k" || e.code === "KeyK") {
         e.preventDefault();
-        wrapSelection("[", "](url)");
+        wrapSelection("[", "](url)", selectionStart, selectionEnd);
       }
     }
   };
@@ -226,27 +309,6 @@ export function MarkdownEditor({
         }
       }
     }
-  };
-
-  const wrapSelection = (before: string, after: string) => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
-    const { selectionStart, selectionEnd, value } = textarea;
-    const selected = value.substring(selectionStart, selectionEnd) || "text";
-    const newValue =
-      value.substring(0, selectionStart) +
-      before +
-      selected +
-      after +
-      value.substring(selectionEnd);
-
-    onChange(newValue);
-    setTimeout(() => {
-      textarea.focus();
-      textarea.selectionStart = selectionStart + before.length;
-      textarea.selectionEnd = selectionStart + before.length + selected.length;
-    }, 0);
   };
 
   // Drag and Drop support for .md files
@@ -316,6 +378,7 @@ export function MarkdownEditor({
           onMouseUp={saveSelection}
           onPointerUp={saveSelection}
           onFocus={saveSelection}
+          onBlur={saveSelection}
           onSelect={saveSelection}
           onScroll={handleScrollCombined}
           spellCheck={false}
