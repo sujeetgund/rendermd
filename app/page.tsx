@@ -52,7 +52,7 @@ import { MarkdownPreview } from "@/components/preview/markdown-preview";
 import { TocDrawer } from "@/components/studio/toc-drawer";
 import { DocumentDrawer } from "@/components/studio/document-drawer";
 import { CustomThemeModal } from "@/components/presets/custom-theme-modal";
-import { StatsBadge } from "@/components/studio/stats-badge";
+import { EditorStatusBar } from "@/components/studio/editor-status-bar";
 import { Toaster, toast } from "sonner";
 import {
   AppLockProvider,
@@ -673,13 +673,8 @@ function StudioContent() {
                   )}
                 />
               </div>
-              {/* Bottom Editor Status Bar (Desktop only) */}
-              <div className="hidden sm:flex h-7 items-center justify-between border-t border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-[#0a0d14] px-3">
-                <StatsBadge stats={stats} />
-                <span className="text-[10px] font-mono text-neutral-400">
-                  {currentDoc.presetId.toUpperCase()} • UTF-8
-                </span>
-              </div>
+              {/* Bottom Editor Status Bar */}
+              <EditorStatusBar stats={stats} />
             </div>
           }
           right={
