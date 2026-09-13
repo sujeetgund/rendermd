@@ -560,6 +560,18 @@ function StudioContent() {
     });
   };
 
+  // Global Keyboard Shortcuts (Alt + M for TOC / Outline)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.altKey && (e.code === "KeyM" || e.key.toLowerCase() === "m")) {
+        e.preventDefault();
+        setIsTocDrawerOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   // Export Actions
   const handleExportHtml = () => {
     const previewEl = document.getElementById("markdown-preview-root");

@@ -44,6 +44,7 @@ import confetti from "canvas-confetti";
 import { generateShareUrl } from "@/lib/storage/share";
 import { useAppLock } from "@/components/security/app-lock-context";
 import { SecuritySettings } from "@/components/security/security-settings";
+import { StudioSettingsModal } from "./studio-settings-modal";
 
 interface TopNavProps {
   document: MarkdownDocument;
@@ -89,10 +90,9 @@ export function TopNav({
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [titleValue, setTitleValue] = useState(currentDoc.title);
   const [showExportMenu, setShowExportMenu] = useState(false);
-  const [showSettingsMenu, setShowSettingsMenu] = useState(false);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [showSecurityModal, setShowSecurityModal] = useState(false);
   const exportRef = useRef<HTMLDivElement>(null);
-  const settingsRef = useRef<HTMLDivElement>(null);
 
   const { isConfigured, lockApp } = useAppLock();
 
@@ -119,12 +119,6 @@ export function TopNav({
         !exportRef.current.contains(event.target as Node)
       ) {
         setShowExportMenu(false);
-      }
-      if (
-        settingsRef.current &&
-        !settingsRef.current.contains(event.target as Node)
-      ) {
-        setShowSettingsMenu(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -294,183 +288,6 @@ export function TopNav({
           </button>
         </div>
 
-        {/* Theme Mode Toggle (Desktop) */}
-        <button
-          onClick={() => setTheme(isDarkTheme ? "light" : "dark")}
-          title={`Switch to ${isDarkTheme ? "Light" : "Dark"} Mode`}
-          className="hidden sm:flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/80 transition-colors"
-        >
-          {isDarkTheme ? (
-            <Sun className="h-3.5 w-3.5 text-amber-400" />
-          ) : (
-            <Moon className="h-3.5 w-3.5 text-neutral-600" />
-          )}
-        </button>
-
-        {/* Outline / TOC Toggle (Desktop) */}
-        <button
-          onClick={onOpenTocDrawer}
-          title="Document Outline / Table of Contents"
-          className="hidden sm:flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/80 transition-colors"
-        >
-          <ListTree className="h-3.5 w-3.5" />
-        </button>
-
-        {/* Settings Popover */}
-        <div ref={settingsRef} className="relative">
-          <button
-            onClick={() => setShowSettingsMenu(!showSettingsMenu)}
-            title="Studio Settings"
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/80 transition-colors"
-          >
-            <Settings2 className="h-3.5 w-3.5" />
-          </button>
-
-          {showSettingsMenu && (
-            <div className="absolute right-0 top-10 z-40 w-64 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-3 shadow-2xl space-y-3">
-              <div className="text-xs font-semibold text-neutral-900 dark:text-white uppercase tracking-wider">
-                Studio Preferences
-              </div>
-
-              {/* Page Layout Size */}
-              <div>
-                <div className="text-xs text-neutral-700 dark:text-neutral-300 mb-1.5 font-medium">
-                  Page Layout
-                </div>
-                <div className="grid grid-cols-3 gap-1 rounded-lg bg-neutral-100 dark:bg-neutral-800 p-1 text-xs">
-                  {(["continuous", "a4", "letter"] as PageSize[]).map(
-                    (size) => (
-                      <button
-                        key={size}
-                        onClick={() => onUpdateSettings({ pageSize: size })}
-                        className={`rounded-md py-1 capitalize font-medium transition-colors ${
-                          settings.pageSize === size
-                            ? "bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white shadow-2xs font-semibold"
-                            : "text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-200"
-                        }`}
-                      >
-                        {size === "continuous"
-                          ? "Web Flow"
-                          : size.toUpperCase()}
-                      </button>
-                    ),
-                  )}
-                </div>
-              </div>
-
-              {/* Line Numbers Toggle */}
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-neutral-700 dark:text-neutral-300 font-medium">
-                  Show Line Numbers
-                </span>
-                <button
-                  onClick={() =>
-                    onUpdateSettings({
-                      lineNumbers: !settings.lineNumbers,
-                    })
-                  }
-                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
-                    settings.lineNumbers
-                      ? "bg-emerald-600"
-                      : "bg-neutral-300 dark:bg-neutral-700"
-                  }`}
-                >
-                  <span
-                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
-                      settings.lineNumbers ? "translate-x-4" : "translate-x-0"
-                    }`}
-                  />
-                </button>
-              </div>
-
-              {/* Word Wrap Toggle */}
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-neutral-700 dark:text-neutral-300 font-medium">
-                  Editor Word Wrap
-                </span>
-                <button
-                  onClick={() =>
-                    onUpdateSettings({
-                      wordWrap: !settings.wordWrap,
-                    })
-                  }
-                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
-                    settings.wordWrap
-                      ? "bg-emerald-600"
-                      : "bg-neutral-300 dark:bg-neutral-700"
-                  }`}
-                >
-                  <span
-                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
-                      settings.wordWrap ? "translate-x-4" : "translate-x-0"
-                    }`}
-                  />
-                </button>
-              </div>
-
-              {/* Font Size Selector */}
-              <div>
-                <div className="flex items-center justify-between text-xs text-neutral-700 dark:text-neutral-300 font-medium mb-1">
-                  <span>Editor Font Size</span>
-                  <span className="font-mono text-emerald-500 font-bold">
-                    {settings.fontSize}px
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min="12"
-                  max="22"
-                  step="1"
-                  value={settings.fontSize}
-                  onChange={(e) =>
-                    onUpdateSettings({
-                      fontSize: parseInt(e.target.value, 10),
-                    })
-                  }
-                  className="w-full accent-emerald-500 cursor-pointer"
-                />
-              </div>
-
-              <div className="pt-2 border-t border-neutral-200 dark:border-neutral-800">
-                <button
-                  onClick={() => {
-                    setShowSettingsMenu(false);
-                    setShowSecurityModal(true);
-                  }}
-                  className="w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-xs font-medium text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
-                >
-                  <div className="flex items-center gap-2">
-                    <ShieldCheck className="h-4 w-4 text-emerald-500" />
-                    <span>Security & App Lock</span>
-                  </div>
-                  <span className="text-[10px] text-emerald-500 font-semibold uppercase">
-                    {isConfigured ? "Active" : "Off"}
-                  </span>
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Lock App Quick Button (Desktop & Mobile) */}
-        <button
-          onClick={() => {
-            if (isConfigured) {
-              lockApp();
-            } else {
-              setShowSecurityModal(true);
-            }
-          }}
-          title={isConfigured ? "Lock App Immediately" : "Setup App Lock Protection"}
-          className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
-            isConfigured
-              ? "text-emerald-500 hover:bg-emerald-500/10 dark:hover:bg-emerald-500/20"
-              : "text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/80"
-          }`}
-        >
-          <ShieldLock className="h-3.5 w-3.5" />
-        </button>
-
         {/* Share Link Button (Desktop) */}
         <button
           onClick={handleShareLink}
@@ -567,7 +384,27 @@ export function TopNav({
             </div>
           )}
         </div>
+
+        {/* Unified Studio Settings Button */}
+        <button
+          onClick={() => setIsSettingsModalOpen(true)}
+          title="Studio Settings"
+          className="flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/80 transition-colors"
+        >
+          <Settings2 className="h-3.5 w-3.5" />
+        </button>
       </div>
+
+      {/* Studio Settings Modal */}
+      <StudioSettingsModal
+        isOpen={isSettingsModalOpen}
+        onClose={() => setIsSettingsModalOpen(false)}
+        settings={settings}
+        onUpdateSettings={onUpdateSettings}
+        onOpenTocDrawer={onOpenTocDrawer}
+        onOpenCustomizer={onOpenCustomizer}
+        onOpenSecurityModal={() => setShowSecurityModal(true)}
+      />
 
       {/* Security Settings Modal */}
       {showSecurityModal && mounted && createPortal(
