@@ -17,6 +17,13 @@ export function generateStandaloneHtml({
   preset,
 }: ExportHtmlParams): string {
   const presetCss = generatePresetCSSString(preset);
+  const cleanedHtml = cleanMarkdownHtmlForExport(markdownHtml);
+
+  const siteUrl =
+    process.env.NEXT_PUBLIC_APP_URL ||
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    "https://rendermd.vercel.app";
+  const displayUrl = siteUrl.replace(/^https?:\/\//, "").replace(/\/$/, "");
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -74,10 +81,54 @@ export function generateStandaloneHtml({
 </head>
 <body>
   <main class="document-wrapper markdown-document">
-    ${markdownHtml}
+    ${cleanedHtml}
+    
+    <footer class="export-footer">
+      <span>Exported with</span>
+      <a href="${escapeHtml(siteUrl)}" target="_blank" rel="noopener noreferrer" class="export-footer-link">
+        <strong>rendermd</strong>
+      </a>
+    </footer>
   </main>
 </body>
 </html>`;
+}
+
+/**
+ * Strips preview-only interactive controls (Copy buttons, floating toolbars, hover anchor links)
+ * to output clean, self-contained HTML for static document viewing.
+ */
+function cleanMarkdownHtmlForExport(rawHtml: string): string {
+  if (typeof window === "undefined" || typeof DOMParser === "undefined") {
+    return rawHtml;
+  }
+
+  try {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(rawHtml, "text/html");
+
+    // 1. Remove heading anchor '#' links
+    doc.querySelectorAll("a[aria-hidden='true']").forEach((el) => el.remove());
+
+    // 2. Remove preview-only interactive buttons (Copy code, Mermaid toolbar, Frontmatter action buttons)
+    doc.querySelectorAll("button").forEach((el) => el.remove());
+
+    // 3. Remove floating toolbars and empty interactive containers
+    doc.querySelectorAll(".absolute.right-2\\.5, .absolute.top-2\\.5").forEach((el) => el.remove());
+
+    // 4. Remove frontmatter header bar (the useless format badge)
+    doc.querySelectorAll(".frontmatter-header-bar").forEach((el) => el.remove());
+
+    // 5. Ensure checkbox SVG icons have explicit attributes if missing
+    doc.querySelectorAll("ul.task-list li svg, input[type='checkbox'] + span svg, span > svg").forEach((svg) => {
+      svg.setAttribute("width", "12");
+      svg.setAttribute("height", "12");
+    });
+
+    return doc.body.innerHTML;
+  } catch {
+    return rawHtml;
+  }
 }
 
 /**
@@ -106,3 +157,4 @@ function escapeHtml(str: string): string {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
 }
+

@@ -57,7 +57,7 @@ export function FrontmatterBlock({
       className={`frontmatter-block-root not-prose my-5 rounded-lg border border-[var(--md-border,#e5e7eb)] bg-transparent overflow-hidden ${className}`}
     >
       {/* Clean SaaS Header Bar */}
-      <div className="flex items-center justify-between px-3.5 py-2 border-b border-[var(--md-border,#e5e7eb)]/60 bg-[var(--md-surface-subtle,rgba(0,0,0,0.015))] select-none">
+      <div className="frontmatter-header-bar flex items-center justify-between px-3.5 py-2 border-b border-[var(--md-border,#e5e7eb)]/60 bg-[var(--md-surface-subtle,rgba(0,0,0,0.015))] select-none">
         <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-[var(--md-muted-fg,#656d76)]">
           {frontmatter.format}
         </span>

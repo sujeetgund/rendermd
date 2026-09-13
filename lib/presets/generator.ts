@@ -194,15 +194,88 @@ ${varDeclarations}
   margin-bottom: 0;
 }
 
-.markdown-document ul.task-list {
-  list-style-type: none;
-  padding-left: 0.25rem;
+/* Task Lists & Checkbox Styling */
+.markdown-document ul.contains-task-list,
+.markdown-document ul.task-list,
+.markdown-document li.task-list-item {
+  list-style: none !important;
+  list-style-type: none !important;
+  padding-left: 0 !important;
+  margin-left: 0 !important;
 }
 
-.markdown-document ul.task-list li {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
+.markdown-document li.task-list-item::marker,
+.markdown-document ul.contains-task-list > li::marker {
+  content: "" !important;
+  display: none !important;
+}
+
+.markdown-document li.task-list-item,
+.markdown-document ul.contains-task-list li {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  margin-bottom: var(--md-spacing-list) !important;
+  list-style: none !important;
+}
+
+/* Checkbox Outer Wrapper */
+.markdown-document .task-checkbox-wrapper,
+.markdown-document input[type="checkbox"] + span,
+.markdown-document li > span:first-child {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  vertical-align: middle !important;
+  margin-right: 0.4rem !important;
+  flex-shrink: 0 !important;
+}
+
+/* Native fallback input[type="checkbox"] */
+.markdown-document input[type="checkbox"] {
+  width: 1rem !important;
+  height: 1rem !important;
+  margin-right: 0.4rem !important;
+  accent-color: var(--md-accent) !important;
+  cursor: default !important;
+}
+
+/* Custom Checkbox Box */
+.markdown-document .task-checkbox-box {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px !important;
+  min-height: 16px !important;
+  border-radius: 4px !important;
+  border: 1.5px solid var(--md-border) !important;
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+  transition: all 0.15s ease !important;
+}
+
+/* Checked Box State */
+.markdown-document .task-checkbox-checked,
+.markdown-document .task-checkbox-box:has(svg) {
+  background-color: var(--md-accent) !important;
+  border-color: var(--md-accent) !important;
+  color: #ffffff !important;
+}
+
+/* Checkmark Icon SVG */
+.markdown-document .task-checkbox-icon,
+.markdown-document .task-checkbox-box svg {
+  width: 11px !important;
+  height: 11px !important;
+  min-width: 11px !important;
+  min-height: 11px !important;
+  stroke: #ffffff !important;
+  stroke-width: 3px !important;
+  fill: none !important;
+  display: block !important;
 }
 
 .markdown-document code:not(pre code) {
@@ -215,13 +288,99 @@ ${varDeclarations}
   border: 1px solid var(--md-code-border);
 }
 
-.markdown-document pre {
+.markdown-document .code-block-wrapper {
   margin: 1.25rem 0;
   border-radius: var(--md-radius);
   background-color: var(--md-code-bg);
   border: 1px solid var(--md-code-border);
-  overflow-x: auto;
+  overflow: hidden;
 }
+
+.markdown-document .code-block-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0.4rem 0.75rem !important;
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  border-bottom: 1px solid var(--md-code-border) !important;
+  font-family: var(--md-mono-font-family) !important;
+  font-size: 0.75rem !important;
+}
+
+.markdown-document .code-block-body {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: stretch !important;
+  padding: 0.75rem 1rem !important;
+  overflow-x: auto !important;
+  line-height: 1.5 !important;
+}
+
+.markdown-document .code-line-numbers {
+  display: flex !important;
+  flex-direction: column !important;
+  text-align: right !important;
+  padding-right: 0.75rem !important;
+  margin-right: 0.75rem !important;
+  border-right: 1px solid var(--md-code-border) !important;
+  color: var(--md-muted-fg) !important;
+  opacity: 0.4 !important;
+  font-family: var(--md-mono-font-family) !important;
+  font-size: 0.8125rem !important;
+  line-height: 1.5 !important;
+  user-select: none !important;
+  flex-shrink: 0 !important;
+}
+
+.markdown-document pre,
+.markdown-document .code-pre {
+  flex: 1 1 0% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  overflow-x: auto !important;
+}
+
+.markdown-document pre code,
+.markdown-document .code-pre code {
+  display: block !important;
+  font-family: var(--md-mono-font-family) !important;
+  font-size: 0.85rem !important;
+  line-height: 1.5 !important;
+  white-space: pre !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+/* Prism Syntax Highlighting Tokens */
+.markdown-document .token.comment,
+.markdown-document .token.prolog,
+.markdown-document .token.doctype,
+.markdown-document .token.cdata {
+  color: #8b949e;
+  font-style: italic;
+}
+.markdown-document .token.namespace { opacity: 0.7; }
+.markdown-document .token.string,
+.markdown-document .token.attr-value { color: #a5d6ff; }
+.markdown-document .token.punctuation { color: #c9d1d9; }
+.markdown-document .token.operator { color: #ff7b72; }
+.markdown-document .token.keyword { color: #ff7b72; font-weight: 600; }
+.markdown-document .token.function,
+.markdown-document .token.class-name { color: #d2a8ff; }
+.markdown-document .token.boolean,
+.markdown-document .token.number,
+.markdown-document .token.constant,
+.markdown-document .token.property,
+.markdown-document .token.symbol { color: #79c0ff; }
+.markdown-document .token.tag,
+.markdown-document .token.selector,
+.markdown-document .token.attr-name { color: #7ee787; }
+.markdown-document .token.variable,
+.markdown-document .token.regex,
+.markdown-document .token.important { color: #ffa657; }
 
 .markdown-document table {
   width: 100%;
@@ -273,82 +432,95 @@ ${varDeclarations}
   overflow-y: hidden;
 }
 
-/* GitHub Alerts */
-.markdown-document .markdown-alert {
+/* GitHub Alerts / Callout Boxes */
+.markdown-document .markdown-alert,
+.markdown-document blockquote.markdown-alert {
   margin: 1.25rem 0;
-  padding: 0.75rem 1rem;
+  padding: 0.85rem 1.15rem;
   border-left: 4px solid var(--md-border);
   border-radius: 0 var(--md-radius) var(--md-radius) 0;
-  font-size: 0.95em;
-  line-height: 1.6;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  background-color: var(--md-quote-bg);
 }
 
 .markdown-document .markdown-alert > :last-child {
   margin-bottom: 0 !important;
 }
 
-.markdown-document .markdown-alert .markdown-alert-title {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 600;
+.markdown-document .markdown-alert p {
+  margin-top: 0.35rem;
   margin-bottom: 0.35rem;
-  line-height: 1.2;
+}
+
+.markdown-document .markdown-alert .markdown-alert-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.4rem;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0.35rem !important;
+  line-height: 1.3 !important;
 }
 
 .markdown-document .markdown-alert .markdown-alert-title svg,
 .markdown-document .markdown-alert .markdown-alert-title svg.octicon {
-  width: 1rem;
-  height: 1rem;
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px !important;
+  min-height: 16px !important;
   margin-right: 0.35rem;
   fill: currentColor;
+  stroke: currentColor;
   flex-shrink: 0;
+  display: inline-block;
+  vertical-align: text-bottom;
 }
 
 .markdown-document .markdown-alert.markdown-alert-note {
-  border-left-color: var(--md-alert-note-border);
-  background-color: var(--md-alert-note-bg);
-  color: var(--md-alert-note-fg);
+  border-left-color: var(--md-alert-note-border) !important;
+  background-color: var(--md-alert-note-bg) !important;
+  color: var(--md-alert-note-fg) !important;
 }
 .markdown-document .markdown-alert.markdown-alert-note .markdown-alert-title {
-  color: var(--md-alert-note-fg);
+  color: var(--md-alert-note-fg) !important;
 }
 
 .markdown-document .markdown-alert.markdown-alert-tip {
-  border-left-color: var(--md-alert-tip-border);
-  background-color: var(--md-alert-tip-bg);
-  color: var(--md-alert-tip-fg);
+  border-left-color: var(--md-alert-tip-border) !important;
+  background-color: var(--md-alert-tip-bg) !important;
+  color: var(--md-alert-tip-fg) !important;
 }
 .markdown-document .markdown-alert.markdown-alert-tip .markdown-alert-title {
-  color: var(--md-alert-tip-fg);
+  color: var(--md-alert-tip-fg) !important;
 }
 
 .markdown-document .markdown-alert.markdown-alert-important {
-  border-left-color: var(--md-alert-important-border);
-  background-color: var(--md-alert-important-bg);
-  color: var(--md-alert-important-fg);
+  border-left-color: var(--md-alert-important-border) !important;
+  background-color: var(--md-alert-important-bg) !important;
+  color: var(--md-alert-important-fg) !important;
 }
 .markdown-document .markdown-alert.markdown-alert-important .markdown-alert-title {
-  color: var(--md-alert-important-fg);
+  color: var(--md-alert-important-fg) !important;
 }
 
 .markdown-document .markdown-alert.markdown-alert-warning {
-  border-left-color: var(--md-alert-warning-border);
-  background-color: var(--md-alert-warning-bg);
-  color: var(--md-alert-warning-fg);
+  border-left-color: var(--md-alert-warning-border) !important;
+  background-color: var(--md-alert-warning-bg) !important;
+  color: var(--md-alert-warning-fg) !important;
 }
 .markdown-document .markdown-alert.markdown-alert-warning .markdown-alert-title {
-  color: var(--md-alert-warning-fg);
+  color: var(--md-alert-warning-fg) !important;
 }
 
 .markdown-document .markdown-alert.markdown-alert-caution {
-  border-left-color: var(--md-alert-caution-border);
-  background-color: var(--md-alert-caution-bg);
-  color: var(--md-alert-caution-fg);
+  border-left-color: var(--md-alert-caution-border) !important;
+  background-color: var(--md-alert-caution-bg) !important;
+  color: var(--md-alert-caution-fg) !important;
 }
 .markdown-document .markdown-alert.markdown-alert-caution .markdown-alert-title {
-  color: var(--md-alert-caution-fg);
+  color: var(--md-alert-caution-fg) !important;
 }
 
 /* Footnotes */
@@ -388,10 +560,13 @@ ${varDeclarations}
   color: var(--md-accent);
 }
 
-/* Mermaid SVG container */
+/* Mermaid SVG container & sequence diagram styling */
+.markdown-document .mermaid-svg-wrapper,
 .markdown-document .mermaid-svg-container {
   display: flex;
   justify-content: center;
+  align-items: center;
+  width: 100%;
   margin: 1.5rem 0;
   padding: 1.25rem;
   background-color: var(--md-bg);
@@ -400,9 +575,54 @@ ${varDeclarations}
   overflow-x: auto;
 }
 
+.markdown-document .mermaid-svg-wrapper svg,
 .markdown-document .mermaid-svg-container svg {
   max-width: 100%;
   height: auto;
+  font-family: var(--md-font-family) !important;
+}
+
+.markdown-document .mermaid-svg-wrapper svg text,
+.markdown-document .mermaid-svg-container svg text {
+  font-family: var(--md-font-family) !important;
+}
+
+/* Standalone Export Footer Branding */
+.markdown-document .export-footer {
+  margin-top: 3.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--md-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  color: var(--md-muted-fg);
+  font-family: var(--md-font-family);
+  opacity: 0.75;
+  transition: opacity 0.15s ease;
+}
+
+.markdown-document .export-footer:hover {
+  opacity: 1;
+}
+
+.markdown-document .export-footer a.export-footer-link {
+  color: var(--md-accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.markdown-document .export-footer a.export-footer-link:hover {
+  text-decoration: underline;
+  color: var(--md-link-hover);
+}
+
+@media print {
+  .markdown-document .export-footer {
+    border-top-color: #e5e7eb !important;
+    color: #6b7280 !important;
+  }
 }
 `;
 }

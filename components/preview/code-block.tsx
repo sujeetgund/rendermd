@@ -80,7 +80,7 @@ export function CodeBlock({
         color: "var(--md-code-fg, inherit)",
         borderColor: "var(--md-code-border, rgba(0, 0, 0, 0.08))",
       }}
-      className="group relative my-5 overflow-hidden rounded-[var(--md-radius)] border text-xs font-mono transition-all"
+      className="code-block-wrapper group relative my-5 overflow-hidden rounded-[var(--md-radius)] border text-xs font-mono transition-all"
     >
       {/* Header Bar with Language Badge and Copy Button */}
       <div
@@ -88,9 +88,9 @@ export function CodeBlock({
           backgroundColor: "rgba(0, 0, 0, 0.06)",
           borderBottomColor: "var(--md-code-border, rgba(0, 0, 0, 0.08))",
         }}
-        className="flex items-center justify-between border-b px-3 py-1.5 opacity-90"
+        className="code-block-header flex items-center justify-between border-b px-3 py-1.5 opacity-90"
       >
-        <span className="font-semibold uppercase tracking-wider text-[10px] opacity-75">
+        <span className="code-block-lang font-semibold uppercase tracking-wider text-[10px] opacity-75">
           {cleanLang}
         </span>
         <button
@@ -113,10 +113,10 @@ export function CodeBlock({
       </div>
 
       {/* Code Area */}
-      <div className="flex overflow-x-auto p-3 leading-relaxed">
+      <div className="code-block-body flex overflow-x-auto p-3 leading-relaxed">
         {showLineNumbers && (
           <div
-            className="select-none pr-3 text-right font-mono opacity-30 border-r border-neutral-500/20 mr-3 shrink-0"
+            className="code-line-numbers select-none pr-3 text-right font-mono opacity-30 border-r border-neutral-500/20 mr-3 shrink-0"
             aria-hidden="true"
           >
             {lines.map((_, i) => (
@@ -126,7 +126,7 @@ export function CodeBlock({
         )}
         <pre
           style={{ backgroundColor: "transparent" }}
-          className="flex-1 overflow-x-auto p-0 m-0 font-mono"
+          className="code-pre flex-1 overflow-x-auto p-0 m-0 font-mono"
         >
           <code
             className={`language-${cleanLang} block whitespace-pre`}
